@@ -1,15 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Chart from './Chart'
-import CommandMenu from './CommandMenu'
-import { DropdownMenu } from './DropdownPopover'
 import DropdownExercises from './DropdownExercises'
 import { capitalizeWords } from '@/lib/mix'
 
 export default function Progress ({ exercises, progress }) {
   const [selectedExercise, setSelectedExercise] = useState()
   const [chartData, setChartData] = useState([])
+  console.log(chartData)
 
   useEffect(() => {
     const exercise = exercises.find(e => e.id === 5)
@@ -39,15 +37,7 @@ export default function Progress ({ exercises, progress }) {
         </section>
         <DropdownExercises exercises={exercises} setSelectedExercise={setSelectedExercise} />
       </header>
-      <main className='w-full'>
-        <div className='flex flex-row justify-between'>
-          <CommandMenu data={exercises} />
-          <DropdownMenu data={exercises} />
-        </div>
-        <div className='w-full h-[300px] bg-white'>
-          <Chart chartData={chartData} />
-        </div>
-      </main>
+      <main className='w-full' />
     </>
   )
 }

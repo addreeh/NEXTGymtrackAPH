@@ -33,6 +33,9 @@
     "tailwindcss": "4.0.0-alpha.23"
   },
   "eslintConfig": {
-    "extends": "./node_modules/standard/eslintrc.json"
+    "extends": [
+      "./node_modules/standard/eslintrc.json",
+      "next/core-web-vitals"
+    ]
   }
 }
