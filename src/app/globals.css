@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Eina03';
+  src: url('/fonts/eina-03-bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Eina03';
+  src: url('/fonts/eina-03-regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Eina03';
+  src: url('/fonts/eina-03-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@theme {
+  --font-eina03: "Eina03", "sans-serif";
+  --color-popover-bg: #2E2E33;
+  --color-popover-border: #49484D;
+  --color-popover-card: #4A4A4F;
+  --color-popover-text: #A1A2A7;
+  --color-svg-bg: #2F2E32;
+  --color-svg-text: #56555B;
+  --color-svg-border: #424249;
+  --color-input-border: #2A2A2C;
+  --color-card-bg: #222126;
+  --color-card-border: #444348;
+  --color-card-border-2: #2E2D31;
+  --color-card-text: #A4A3A8;
+  --color-footer-text: #CACACC;
+  --color-drawer-bg: #0A0A0C;
+  --color-drawer-overlay: #28272C;
+  --color-drawer-border: #464648;
+  --color-arrow-right: #414047;
+}
+
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* Mobile-only styles */
+@media (min-width: 768px) {
+  body::before {
+    content: "This app is designed for mobile devices only. Please view on a smaller screen.";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+  }
+}
