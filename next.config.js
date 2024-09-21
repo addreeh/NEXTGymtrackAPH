@@ -1,5 +1,5 @@
 /** @type {import("next").NextConfig} */
 module.exports = {
   output: 'standalone',
-  staticPageGenerationTimeout: 100
+  staticPageGenerationTimeout: 300
 }
