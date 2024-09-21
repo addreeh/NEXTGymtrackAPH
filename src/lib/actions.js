@@ -12,7 +12,6 @@ export async function handleProgress (formData) {
   const currentDayOfWeek = today.getDay() // 0 (Domingo) a 6 (Sábado)
   const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
-  console.log(formData.get('workoutDay'))
   const selectedDayIndex = daysOfWeek.indexOf(formData.get('workoutDay'))
   const daysDiff = selectedDayIndex - currentDayOfWeek
 
@@ -20,7 +19,6 @@ export async function handleProgress (formData) {
   selectedDate.setDate(today.getDate() + daysDiff)
 
   const date = getFullDay(selectedDate)
-  console.log(date)
 
   let newProgress
   if (formData.get('weight1') && formData.get('weight2')) {
@@ -47,7 +45,6 @@ export async function handleProgress (formData) {
 export async function getProgress (exerciseId) {
   const session = await auth()
   const email = session.user.email
-  console.log('EMAIL', email)
 
   const day = getFullDay(new Date())
   const result = await getProgressByDate(email, exerciseId, day.full)
@@ -64,29 +61,6 @@ export async function getProgress (exerciseId) {
     // updatedItems.push({ name: `${updatedItems.length + 1}ª Serie`, reps: '', weight: '', id: null })
     // setItems(updatedItems)
   }
-}
-
-export async function getProgressWorkout (workouts) {
-  const session = await auth()
-  const email = session.user.email
-
-  const day = getFullDay(new Date())
-  console.log(workouts)
-  // const result = await getProgressByDate(email, exerciseId, day.full)
-  // if (result.data) {
-  //   const progress = result.data.map((item) => ({
-  //     id: item.id,
-  //     date: item.date,
-  //     reps: item.repetitions.toString(),
-  //     weight: item.weight.toString(),
-  //     type: item.type
-  //   }))
-  console.log('EMAIL', email)
-  console.log(day)
-
-  return 'hola'
-  // updatedItems.push({ name: `${updatedItems.length + 1}ª Serie`, reps: '', weight: '', id: null })
-  // setItems(updatedItems)
 }
 
 export async function removeProgress (progressId) {

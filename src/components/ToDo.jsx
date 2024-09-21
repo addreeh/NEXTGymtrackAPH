@@ -22,7 +22,12 @@ const tickVariants = {
 }
 
 export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
-  console.warn(exercise)
+  const lastWeekProgress = progress.lastWeek
+  const threeWeeksAgoProgress = progress.threeWeeksAgo
+
+  const [recommendation, setRecommendation] = useState('')
+  const [lastWeekExercises, setLastWeekExercises] = useState([])
+  const [threeWeeksAgoExercises, setThreeWeeksAgoExercises] = useState([])
 
   let numberSeries
   let topSet
@@ -61,6 +66,71 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
   const [repsSuper, setRepsSuper] = useState('')
 
   const [fetchExerciseId, setFetchExerciseId] = useState()
+  useEffect(() => {
+    const filterExercises = (progressData, setStateFunction) => {
+      const filteredExercises = progressData.filter(
+        (progress) => progress.exercise_id === exerciseId
+      )
+      setStateFunction(filteredExercises)
+    }
+
+    filterExercises(lastWeekProgress, setLastWeekExercises)
+    filterExercises(threeWeeksAgoProgress, setThreeWeeksAgoExercises)
+  }, [progress, exercise])
+
+  useEffect(() => {
+    const analyzeProgress = () => {
+      if (lastWeekExercises.length === 0 || threeWeeksAgoExercises.length === 0) {
+        return
+      }
+
+      const lastWeekPerformance = lastWeekExercises[0]
+      const threeWeeksAgoPerformances = threeWeeksAgoExercises.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+      // Obtener el rendimiento más reciente de las tres semanas anteriores
+      const mostRecentThreeWeeksAgoPerformance = threeWeeksAgoPerformances[0]
+
+      // Verificar si hay datos de al menos dos semanas diferentes
+      const hasMultipleWeeks = threeWeeksAgoPerformances.some(perf =>
+        new Date(perf.date).getTime() !== new Date(mostRecentThreeWeeksAgoPerformance.date).getTime()
+      )
+
+      if (!hasMultipleWeeks) {
+        setRecommendation('No hay suficientes datos para hacer una recomendación. Sigue entrenando consistentemente.')
+        return
+      }
+
+      const weightIncreased = lastWeekPerformance.weight > mostRecentThreeWeeksAgoPerformance.weight
+      const weightDecreased = lastWeekPerformance.weight < mostRecentThreeWeeksAgoPerformance.weight
+      const sameWeight = lastWeekPerformance.weight === mostRecentThreeWeeksAgoPerformance.weight
+
+      const repsIncreased = lastWeekPerformance.repetitions > mostRecentThreeWeeksAgoPerformance.repetitions
+      const repsDecreased = lastWeekPerformance.repetitions < mostRecentThreeWeeksAgoPerformance.repetitions
+      const sameReps = lastWeekPerformance.repetitions === mostRecentThreeWeeksAgoPerformance.repetitions
+
+      if (weightIncreased) {
+        console.log('Weight increased')
+        setRecommendation('¡Excelente progreso! Has aumentado el peso desde hace tres semanas. Mantén este ritmo y asegúrate de mantener una buena forma.')
+      } else if (weightDecreased) {
+        console.log('Weight decreased')
+        setRecommendation('Has disminuido el peso desde hace tres semanas. Considera revisar tu técnica y nutrición, y asegúrate de descansar adecuadamente.')
+      } else if (sameWeight && repsIncreased) {
+        console.log('Same weight and reps increased')
+        setRecommendation('Has aumentado repeticiones. Considera incrementar el peso en la próxima sesión.')
+      } else if (sameWeight && repsDecreased) {
+        console.log('Same weight and reps decreased')
+        setRecommendation('Has mantenido el mismo peso pero has disminuido las repeticiones. Considera mantener este peso hasta que puedas aumentar las repeticiones.')
+      } else if (sameWeight && sameReps) {
+        console.log('Same weight and reps')
+        setRecommendation('Tu rendimiento es constante. Considera subir el peso para avanzar.')
+      } else {
+        console.log('Variable progress')
+        setRecommendation('Tu progreso ha sido variable. Enfócate en mantener una progresión constante, ya sea en peso o en repeticiones.')
+      }
+    }
+
+    analyzeProgress()
+  }, [lastWeekExercises, threeWeeksAgoExercises])
 
   useEffect(() => {
     if (series === 'SST') {
