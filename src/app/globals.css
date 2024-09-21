@@ -32,31 +32,15 @@
   --color-svg-border: #424249;
   --color-input-border: #2A2A2C;
   --color-card-bg: #222126;
-  --color-card-border: #444348;
-  --color-card-border-2: #2E2D31;
+  --color-card-border: #2F2E35;
+  --color-card-border-2: #47474C;
   --color-card-text: #A4A3A8;
   --color-footer-text: #CACACC;
-  --color-drawer-bg: #0A0A0C;
+  --color-drawer-bg: #0B0B0F;
   --color-drawer-overlay: #28272C;
   --color-drawer-border: #464648;
   --color-arrow-right: #414047;
-}
-
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  --color-bg-app: #0A0A0C;
 }
 
 /* Mobile-only styles */
@@ -69,7 +53,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: white;
+    background: #2d2d2d;
     z-index: 9999;
     display: flex;
     align-items: center;
@@ -77,5 +61,34 @@ body {
     padding: 20px;
     text-align: center;
     font-size: 18px;
+    color: white;
   }
+}
+
+#exercises-menu {
+  max-height: 15rem;
+  overflow-y: scroll;
+}
+
+#exercises-menu::-webkit-scrollbar {
+  width: 0;
+}
+
+#exercises-menu {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#exercises {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+#exercises::-webkit-scrollbar {
+  width: 0;
+}
+
+#exercises {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

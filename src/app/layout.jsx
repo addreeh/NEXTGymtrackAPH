@@ -1,6 +1,8 @@
+import { auth } from '@/auth'
 import './globals.css'
 import BottomNavbar from '@/components/BottomNavbar'
 import localFont from 'next/font/local'
+import { redirect } from 'next/navigation'
 
 const eina03 = localFont({
   src: [
@@ -23,11 +25,17 @@ const eina03 = localFont({
   variable: '--font-eina03'
 })
 
-export default function RootLayout ({ children }) {
+export default async function RootLayout ({ children }) {
+  const session = await auth()
+
+  if (!session?.user) {
+    redirect('/api/auth/signin')
+  }
+
   return (
     <html lang='es'>
-      <body className={`${eina03.className} bg-black max-w-md mx-auto min-h-[100vh] max-h-screen overflow-hidden`}>
-        <main>
+      <body className={`${eina03.className} bg-bg-app min-h-screen max-h-screen flex flex-col`}>
+        <main className='flex-1 flex flex-col gap-6 overflow-y-auto p-5'>
           {children}
         </main>
         <BottomNavbar />

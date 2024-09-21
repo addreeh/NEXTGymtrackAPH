@@ -21,15 +21,17 @@ import { Shoulder } from '@/svg/Shoulder'
 import { ArrowLeft, ArrowRight, Info } from 'lucide-react'
 
 function findMaxWeightProgress (exercise) {
-  if (!exercise.progress || exercise.progress.length === 0) {
+  console.log(exercise)
+  if (!exercise.progress.lastWeek || exercise.progress.lastWeek.length === 0) {
     return null
   }
 
-  const maxWeightProgress = exercise.progress.reduce((max, current) => {
-    return current.weight > max.weight ? current : max
-  })
+  const maxWeightProgress = exercise.progress.lastWeek.reduce((max, current) => {
+    const currentMaxWeight = Math.max(...current.weight)
+    return currentMaxWeight > max ? currentMaxWeight : max
+  }, 0)
 
-  return maxWeightProgress.weight
+  return maxWeightProgress
 }
 
 export function DrawerWorkout ({ workout }) {
@@ -42,15 +44,15 @@ export function DrawerWorkout ({ workout }) {
     <Suspense fallback={<div>Loading...</div>}>
       <Drawer.Root open={open} shouldScaleBackground onClose={() => setCurrentPage(0)}>
         <Drawer.Trigger asChild>
-          <div onClick={() => setOpen(true)} className='border-card-border flex h-[9.5rem] w-[9.5rem] flex-col justify-between rounded-3xl border-2 bg-card-bg p-4 cursor-pointer'>
-            <div className='text-card-border flex w-full items-center justify-between'>
-              <div className='border-card-border flex h-16 w-16 items-center justify-center rounded-full border-2'>
-                <h2 className='border-card-border-2 flex h-14 w-14 items-center justify-center rounded-full border-2 text-2xl text-white'>
+          <div onClick={() => setOpen(true)} className='border-card-border flex h-[9.5rem] w-[9.5rem] flex-col justify-between rounded-3xl border-2 bg-card-bg p-4 cursor-pointer ml-1.5'>
+            <div className='text-card-border flex w-full justify-between'>
+              <div className='border-card-border-2 flex h-16 w-16 items-center justify-center rounded-full border-2'>
+                <h2 className='border-card-border flex h-14 w-14 items-center justify-center rounded-full border-2 text-2xl text-white'>
                   0
                 </h2>
               </div>
-              <div className='mb-2'>
-                <svg fill='currentColor' width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' stroke='currentColor'>
+              <div className='mt-2 text-card-border-2'>
+                <svg fill='currentColor' width='20' height='20' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' stroke='currentColor'>
                   <g id='SVGRepo_bgCarrier' strokeWidth='0' />
                   <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round' />
                   <g id='SVGRepo_iconCarrier'>
@@ -119,10 +121,12 @@ export function DrawerWorkout ({ workout }) {
                           <Drawer.Description className='text-white'>
                             {workout.day}
                           </Drawer.Description>
-                          <div className='flex flex-col gap-4 h-full overflow-auto' id='exercises'>
+                          <div className='flex flex-col gap-4 h-full overflow-auto pb-10' id='exercises'>
                             {workout && workout.routine_exercises.map((exercise, index) => (
                               <div
-                                key={`${exercise.exercise_definitions.id}-${index}`} className='flex flex-row justify-between items-center' onClick={() => {
+                                key={`${exercise.exercise_definitions.id}-${index}`}
+                                className='flex flex-row justify-between items-center'
+                                onClick={() => {
                                   setCurrentPage(1)
                                   setSelectedExercise(exercise)
                                 }}
@@ -141,12 +145,11 @@ export function DrawerWorkout ({ workout }) {
                                   <div className='flex flex-col justify-center'>
                                     <p className='text-white font-semibold'>{capitalizeWords(exercise.exercise_definitions.name)}</p>
                                     <p className='text-white text-sm'>
-                                      {(!exercise.series.includes('SST') && !exercise.series.includes('TP') && exercise.series.includes('TS') && exercise.series.includes('TS') && !exercise.series.includes('BOS')) ? capitalizeWords(exercise.series) : exercise.series}
+                                      {(!exercise.series.includes('SST') && !exercise.series.includes('TP') && exercise.series.includes('TS') && !exercise.series.includes('BOS')) ? capitalizeWords(exercise.series) : exercise.series}
                                     </p>
                                   </div>
                                 </div>
                                 <div className='text-arrow-right flex flex-row items-center gap-5'>
-
                                   {exercise.exercise_definitions.progress && findMaxWeightProgress(exercise.exercise_definitions)
                                     ? (
                                       <div className='relative w-12 h-12 bg-svg-bg rounded-full flex justify-center items-center text-white'>
@@ -165,13 +168,13 @@ export function DrawerWorkout ({ workout }) {
                         )
                       : (
                         <>
-                          <Drawer.Title className='font-bold text-4xl text-white'>
+                          <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden'>
                             {capitalizeWords(selectedExercise.exercise_definitions.name)}
                           </Drawer.Title>
                           <Drawer.Description className='text-white'>
                             Tick the checkboxes as you complete the sets
                           </Drawer.Description>
-                          <ToDo exerciseId={selectedExercise.exercise_definitions.id} series={selectedExercise.series} progress={selectedExercise.exercise_definitions.progress} workoutDay={workout.day} />
+                          <ToDo exercise={selectedExercise} exerciseId={selectedExercise.exercise_definitions.id} series={selectedExercise.series} progress={selectedExercise.exercise_definitions.progress} workoutDay={workout.day} />
                           <hr className='h-px my-2 border-0 bg-gray-700' />
                           {renderDescription({ selectedExercise })}
                         </>
@@ -180,7 +183,9 @@ export function DrawerWorkout ({ workout }) {
                   </motion.div>
                 </AnimatePresence>
               </div>
+
             </div>
+
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>

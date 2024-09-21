@@ -9,8 +9,8 @@ export default function BottomNavbar () {
   const pathname = usePathname()
 
   return (
-    <footer className='fixed bottom-0 w-full flex cursor-pointer flex-row justify-between px-5 text-white py-2'>
-      <nav className='w-full'>
+    <footer className='w-full bg-bg-app text-white py-2 h-16'>
+      <nav>
         <ul className='flex justify-around'>
           <li>
             <Link href='/' className={`flex flex-col items-center ${pathname === '/' ? 'text-white' : 'text-gray-500'}`}>
@@ -24,12 +24,12 @@ export default function BottomNavbar () {
           </li>
           <li>
             <Link href='/progress' className={`flex flex-col items-center ${pathname === '/progress' ? 'text-white' : 'text-gray-500'}`}>
-              <ChartNoAxesColumn />
+              <ChartNoAxesColumn className='h-7 w-7' />
             </Link>
           </li>
           <li>
             <Link href='/contact' className={`flex flex-col items-center ${pathname === '/contact' ? 'text-white' : 'text-gray-500'}`}>
-              <MessageSquare />
+              <MessageSquare className='h-7 w-7' />
             </Link>
           </li>
         </ul>

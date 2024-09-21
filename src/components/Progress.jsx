@@ -1,43 +1,106 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Chart from './Chart'
 import DropdownExercises from './DropdownExercises'
 import { capitalizeWords } from '@/lib/mix'
+import DropdownReps from './DropdownReps'
+import DropdownTime from './DropdownTime'
+import DropdownUsers from './DropdownUsers'
 
-export default function Progress ({ exercises, progress }) {
+export default function Progress ({ exercises, progress, users, currentUser }) {
   const [selectedExercise, setSelectedExercise] = useState()
   const [chartData, setChartData] = useState([])
-  console.log(chartData)
+  const [selectedReps, setSelectedReps] = useState({ id: 1, name: '1 Rep Max', value: 'max' })
+  const [selectedTime, setSelectedTime] = useState({ id: 2, name: '3 months', value: 3 })
+  const [selectedUser, setSelectedUser] = useState(users.find(u => u.email === currentUser))
+  const [initialLoad, setInitialLoad] = useState(true)
+  const [isData, setIsData] = useState(false)
 
   useEffect(() => {
     const exercise = exercises.find(e => e.id === 5)
     setSelectedExercise(exercise)
-  }, [])
+  }, [exercises])
 
   useEffect(() => {
-    const data = []
-    if (progress && selectedExercise) {
-      progress.forEach(p => {
-        if (p.exercise_id === selectedExercise.id) {
-          data.push(p)
+    const getData = async () => {
+      if (selectedUser.email !== currentUser || !initialLoad) {
+        const url = `/api/progress?email=${encodeURIComponent(selectedUser.email)}`
+        await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(res => res.json()).then(data => {
+          if (data && data.chartData.length > 0) {
+            let filteredData = data.chartData.filter(p => p.exercise_id === selectedExercise.id)
+
+            if (selectedTime.value !== 'all') {
+              const now = new Date()
+              const timeLimit = new Date()
+              timeLimit.setMonth(now.getMonth() - selectedTime.value)
+
+              filteredData = filteredData.filter(p => new Date(p.date) >= timeLimit)
+            }
+            setChartData(filteredData)
+            setIsData(true)
+          } else {
+            setIsData(false)
+          }
+        })
+      } else {
+        if (progress && progress.length > 0 && selectedExercise) {
+          let filteredData = progress.filter(p => p.exercise_id === selectedExercise.id)
+
+          if (selectedTime.value !== 'all') {
+            const now = new Date()
+            const timeLimit = new Date()
+            timeLimit.setMonth(now.getMonth() - selectedTime.value)
+
+            filteredData = filteredData.filter(p => new Date(p.date) >= timeLimit)
+          }
+
+          setChartData(filteredData)
+          setIsData(true)
+        } else {
+          setIsData(false)
         }
-      })
+      }
     }
-    setChartData(data)
-  }, [selectedExercise])
+
+    getData()
+  }, [selectedExercise, selectedTime, progress, selectedUser, currentUser, initialLoad])
 
   return (
     <>
       <header className='flex flex-row w-full items-center justify-between'>
         <section className='flex flex-col gap-2'>
-          <h1 className='text-4xl font-bold text-white'>{selectedExercise ? capitalizeWords(selectedExercise.name) : 'Bench Press'}</h1>
+          <h1 className='text-4xl font-bold text-white truncate text-ellipsis overflow-hidden max-w-72'>{selectedExercise ? capitalizeWords(selectedExercise.name) : 'Bench Press'}</h1>
           <p className='text-card-text text-sm'>
             This section will show you your progress
           </p>
         </section>
-        <DropdownExercises exercises={exercises} setSelectedExercise={setSelectedExercise} />
+        <DropdownExercises exercises={exercises} selectedExercise={selectedExercise} setSelectedExercise={setSelectedExercise} />
       </header>
-      <main className='w-full' />
+      <main className='w-full flex flex-col gap-8'>
+        <div className='flex flex-row gap-5'>
+          <DropdownReps selectedReps={selectedReps} setSelectedReps={setSelectedReps} />
+          <DropdownTime selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+        </div>
+        <div className='w-full h-[320px] '>
+          <Chart chartData={chartData} selectedReps={selectedReps} />
+        </div>
+        <div className='flex w-full justify-center items-center'>
+          <DropdownUsers users={users} selectedUser={selectedUser} setSelectedUser={setSelectedUser} setInitialLoad={setInitialLoad} />
+        </div>
+      </main>
+      {!isData &&
+        <footer className='flex flex-col flex-1 text-center w-full h-full justify-between items-center py-4'>
+          <p className='text-footer-text text-sm'>
+            No tienes <span className='font-bold'>ningún</span> entreno programado
+            hoy.
+          </p>
+        </footer>}
     </>
   )
 }

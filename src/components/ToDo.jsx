@@ -21,7 +21,9 @@ const tickVariants = {
   unchecked: { pathLength: 0 }
 }
 
-export function ToDo ({ exerciseId, series, progress, workoutDay }) {
+export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
+  console.warn(exercise)
+
   let numberSeries
   let topSet
   let backOffSet

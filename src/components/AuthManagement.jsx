@@ -4,7 +4,7 @@ export async function AuthManagement () {
   const session = await auth()
   if (!session?.user) return <SignIn />
   return (
-    <SignOut />
+    <></>
   )
 }
 
