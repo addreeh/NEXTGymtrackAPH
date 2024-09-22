@@ -28,6 +28,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
   const [recommendation, setRecommendation] = useState('')
   const [lastWeekExercises, setLastWeekExercises] = useState([])
   const [threeWeeksAgoExercises, setThreeWeeksAgoExercises] = useState([])
+  const [recommendationShown, setRecommendationShown] = useState(false)
 
   let numberSeries
   let topSet
@@ -80,6 +81,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
 
   useEffect(() => {
     const analyzeProgress = () => {
+      console.log('THREE', threeWeeksAgoExercises)
       if (lastWeekExercises.length === 0 || threeWeeksAgoExercises.length === 0) {
         return
       }
@@ -101,37 +103,53 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
       }
 
       const weightIncreased = lastWeekPerformance.weight > mostRecentThreeWeeksAgoPerformance.weight
-      const weightDecreased = lastWeekPerformance.weight < mostRecentThreeWeeksAgoPerformance.weight
+      // const weightDecreased = lastWeekPerformance.weight < mostRecentThreeWeeksAgoPerformance.weight
       const sameWeight = lastWeekPerformance.weight === mostRecentThreeWeeksAgoPerformance.weight
 
       const repsIncreased = lastWeekPerformance.repetitions > mostRecentThreeWeeksAgoPerformance.repetitions
-      const repsDecreased = lastWeekPerformance.repetitions < mostRecentThreeWeeksAgoPerformance.repetitions
+      // const repsDecreased = lastWeekPerformance.repetitions < mostRecentThreeWeeksAgoPerformance.repetitions
       const sameReps = lastWeekPerformance.repetitions === mostRecentThreeWeeksAgoPerformance.repetitions
 
       if (weightIncreased) {
-        console.log('Weight increased')
         setRecommendation('¡Excelente progreso! Has aumentado el peso desde hace tres semanas. Mantén este ritmo y asegúrate de mantener una buena forma.')
-      } else if (weightDecreased) {
-        console.log('Weight decreased')
-        setRecommendation('Has disminuido el peso desde hace tres semanas. Considera revisar tu técnica y nutrición, y asegúrate de descansar adecuadamente.')
+      // } else if (weightDecreased) {
+      //   console.log('Weight decreased')
+      //   setRecommendation('Has disminuido el peso desde hace tres semanas. Considera revisar tu técnica y nutrición, y asegúrate de descansar adecuadamente.')
       } else if (sameWeight && repsIncreased) {
         console.log('Same weight and reps increased')
         setRecommendation('Has aumentado repeticiones. Considera incrementar el peso en la próxima sesión.')
-      } else if (sameWeight && repsDecreased) {
-        console.log('Same weight and reps decreased')
-        setRecommendation('Has mantenido el mismo peso pero has disminuido las repeticiones. Considera mantener este peso hasta que puedas aumentar las repeticiones.')
+      // } else if (sameWeight && repsDecreased) {
+      //   console.log('Same weight and reps decreased')
+      //   setRecommendation('Has mantenido el mismo peso pero has disminuido las repeticiones. Considera mantener este peso hasta que puedas aumentar las repeticiones.')
       } else if (sameWeight && sameReps) {
         console.log('Same weight and reps')
         setRecommendation('Tu rendimiento es constante. Considera subir el peso para avanzar.')
-      } else {
-        console.log('Variable progress')
-        setRecommendation('Tu progreso ha sido variable. Enfócate en mantener una progresión constante, ya sea en peso o en repeticiones.')
       }
+      // } else {
+      //   console.log('Variable progress')
+      //   setRecommendation('Tu progreso ha sido variable. Enfócate en mantener una progresión constante, ya sea en peso o en repeticiones.')
+      // }
     }
     console.log(recommendation)
 
     analyzeProgress()
   }, [lastWeekExercises, threeWeeksAgoExercises])
+
+  useEffect(() => {
+    if (recommendation && !isLoading && !recommendationShown) {
+      toast.success(recommendation, {
+        duration: 5000, // Ajusta esto según lo que consideres apropiado
+        style: {
+          minWidth: '50px',
+          minHeight: '45px',
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff'
+        }
+      })
+      setRecommendationShown(true)
+    }
+  }, [recommendation, isLoading, recommendationShown])
 
   useEffect(() => {
     if (series === 'SST') {
@@ -279,7 +297,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
           }
         }
       } catch (error) {
-        console.error('An error occurred while fetching progress:', error)
+        toast.error('Error al obtener los datos')
       } finally {
         setIsLoading(false)
       }
@@ -332,8 +350,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
           })
           document.getElementById(`progressFormTop${index}`).requestSubmit()
         } else {
-          console.error('Please enter weight and reps')
-          toast.error('Please enter weight and reps', {
+          toast.error('Tienes que insertar los datos', {
             style: {
               borderRadius: '10px',
               background: '#333',
@@ -350,8 +367,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
           })
           document.getElementById(`progressFormBack${index}`).requestSubmit()
         } else {
-          console.error('Please enter weight and reps')
-          toast.error('Please enter weight and reps', {
+          toast.error('Tienes que insertar los datos', {
             style: {
               borderRadius: '10px',
               background: '#333',
@@ -369,8 +385,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
           })
           document.getElementById(`progressFormSuperSerie${index}`).requestSubmit()
         } else {
-          console.error('Please enter weight and reps for both parts of the exercise')
-          toast.error('Please enter weight and reps for both parts of the exercise', {
+          toast.error('Tienes que insertar los datos', {
             style: {
               borderRadius: '10px',
               background: '#333',
@@ -387,8 +402,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
           })
           document.getElementById(`progressForm${index}`).requestSubmit()
         } else {
-          console.error('Please enter weight and reps')
-          toast.error('Please enter weight and reps', {
+          toast.error('Tienes que insertar los datos', {
             style: {
               borderRadius: '10px',
               background: '#333',

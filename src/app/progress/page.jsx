@@ -30,11 +30,7 @@ export default async function Page () {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      {/* <div
-        className='h-[calc(100vh-150px)] w-full items-center gap-8 bg-black p-5'
-      > */}
       <Progress exercises={exercises} progress={progress} users={users} currentUser={currentUser} />
-      {/* </div> */}
     </Suspense>
   )
 }
