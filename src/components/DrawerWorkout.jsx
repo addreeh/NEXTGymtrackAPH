@@ -21,7 +21,6 @@ import { Shoulder } from '@/svg/Shoulder'
 import { ArrowLeft, ArrowRight, Info } from 'lucide-react'
 
 function findMaxWeightProgress (exercise) {
-  console.log(exercise)
   if (!exercise.progress.lastWeek || exercise.progress.lastWeek.length === 0) {
     return null
   }

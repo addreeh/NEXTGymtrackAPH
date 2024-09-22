@@ -114,48 +114,49 @@ export async function getUserProgressLastWeek (email) {
 }
 
 export async function getUserProgressLastWeekAndThreeWeeksBefore (email) {
-  const currentDate = new Date()
-  const currentDayOfWeek = currentDate.getDay()
-  const daysSinceLastSunday = currentDayOfWeek
+  try {
+    const currentDate = new Date()
+    const currentDayOfWeek = currentDate.getDay()
+    const daysSinceLastSunday = currentDayOfWeek
 
-  // Calcular la fecha del último domingo
-  const lastSunday = new Date(currentDate)
-  lastSunday.setDate(currentDate.getDate() - daysSinceLastSunday)
+    // Calcular la fecha del último domingo
+    const lastSunday = new Date(currentDate)
+    lastSunday.setDate(currentDate.getDate() - daysSinceLastSunday)
 
-  // Calcular la fecha del domingo anterior a la última semana (hace una semana)
-  const previousSunday = new Date(lastSunday)
-  previousSunday.setDate(lastSunday.getDate() - 7)
+    // Calcular la fecha del domingo anterior a la última semana (hace una semana)
+    const previousSunday = new Date(lastSunday)
+    previousSunday.setDate(lastSunday.getDate() - 7)
 
-  // Calcular la fecha del sábado anterior (hace una semana)
-  const lastSaturday = new Date(previousSunday)
-  lastSaturday.setDate(previousSunday.getDate() + 6)
+    // Calcular la fecha del sábado anterior (hace una semana)
+    const lastSaturday = new Date(previousSunday)
+    lastSaturday.setDate(previousSunday.getDate() + 6)
 
-  // Calcular la fecha del domingo de tres semanas antes
-  const threeWeeksAgoSunday = new Date(lastSunday)
-  threeWeeksAgoSunday.setDate(lastSunday.getDate() - 21)
+    // Calcular la fecha del domingo de tres semanas antes
+    const threeWeeksAgoSunday = new Date(lastSunday)
+    threeWeeksAgoSunday.setDate(lastSunday.getDate() - 21)
 
-  // Calcular la fecha del sábado de tres semanas antes
-  const threeWeeksAgoSaturday = new Date(threeWeeksAgoSunday)
-  threeWeeksAgoSaturday.setDate(threeWeeksAgoSunday.getDate() + 6)
+    // Calcular la fecha del sábado de tres semanas antes
+    const threeWeeksAgoSaturday = new Date(threeWeeksAgoSunday)
+    threeWeeksAgoSaturday.setDate(threeWeeksAgoSunday.getDate() + 6)
 
-  const formatDate = (date) => date.toISOString().split('T')[0]
+    const formatDate = (date) => date.toISOString().split('T')[0]
 
-  // Obtener el ID del usuario por email
-  const { data: userData, error: userError } = await supabase
-    .from('users')
-    .select('id')
-    .eq('email', email)
-    .single()
+    // Obtener el ID del usuario por email
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single()
 
-  if (userError != null) throw new Error(userError.message)
-  if (userData == null) throw new Error('User not found')
+    if (userError) throw new Error(userError.message)
+    if (!userData) throw new Error('User not found')
 
-  const userId = userData.id
+    const userId = userData.id
 
-  // Obtener progreso de la última semana
-  const { data: lastWeekData, error: lastWeekError } = await supabase
-    .from('progress')
-    .select(`
+    // Combina las dos consultas en una sola
+    const { data: progressData, error: progressError } = await supabase
+      .from('progress')
+      .select(`
     date,
     repetitions,
     weight,
@@ -164,45 +165,35 @@ export async function getUserProgressLastWeekAndThreeWeeksBefore (email) {
       name
     )
   `)
-    .eq('user_id', userId)
-    .gte('date', formatDate(previousSunday))
-    .lte('date', formatDate(lastSaturday))
+      .eq('user_id', userId)
+      .gte('date', formatDate(threeWeeksAgoSunday))
+      .lte('date', formatDate(lastSaturday))
 
-  if (lastWeekError) throw new Error(lastWeekError.message)
+    if (progressError) throw new Error(progressError.message)
 
-  // Obtener progreso de tres semanas antes
-  const { data: threeWeeksAgoData, error: threeWeeksAgoError } = await supabase
-    .from('progress')
-    .select(`
-    date,
-    repetitions,
-    weight,
-    exercise_definitions (
-      id,
-      name
-    )
-  `)
-    .eq('user_id', userId)
-    .gte('date', formatDate(threeWeeksAgoSunday))
-    .lte('date', formatDate(lastSunday))
+    // Procesa los datos para separarlos en lastWeek y threeWeeksAgo
+    const lastWeek = progressData
+      .filter(entry => new Date(entry.date) >= previousSunday && new Date(entry.date) <= lastSaturday)
+      .map(formatEntry)
 
-  if (threeWeeksAgoError) throw new Error(threeWeeksAgoError.message)
+    const threeWeeksAgo = progressData
+      .filter(entry => new Date(entry.date) >= threeWeeksAgoSunday && new Date(entry.date) < previousSunday)
+      .map(formatEntry)
 
+    return { lastWeek, threeWeeksAgo }
+  } catch (error) {
+    console.error('Error in getUserProgressLastWeekAndThreeWeeksBefore:', error)
+    throw new Error('Failed to fetch user progress data')
+  }
+}
+
+function formatEntry (entry) {
   return {
-    lastWeek: lastWeekData.map((entry) => ({
-      date: entry.date,
-      repetitions: entry.repetitions,
-      weight: entry.weight,
-      exercise_id: entry.exercise_definitions.id,
-      exercise_name: entry.exercise_definitions.name
-    })),
-    threeWeeksAgo: threeWeeksAgoData.map((entry) => ({
-      date: entry.date,
-      repetitions: entry.repetitions,
-      weight: entry.weight,
-      exercise_id: entry.exercise_definitions.id,
-      exercise_name: entry.exercise_definitions.name
-    }))
+    date: entry.date,
+    repetitions: entry.repetitions,
+    weight: entry.weight,
+    exercise_id: entry.exercise_definitions.id,
+    exercise_name: entry.exercise_definitions.name
   }
 }
 
@@ -296,7 +287,6 @@ export async function insertProgress (email, newProgress) {
   if (error) {
     throw new Error(error.message)
   }
-  console.warn(data)
   return data
 }
 

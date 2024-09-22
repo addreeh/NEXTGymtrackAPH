@@ -128,6 +128,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
         setRecommendation('Tu progreso ha sido variable. Enfócate en mantener una progresión constante, ya sea en peso o en repeticiones.')
       }
     }
+    console.log(recommendation)
 
     analyzeProgress()
   }, [lastWeekExercises, threeWeeksAgoExercises])
@@ -194,7 +195,6 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
         console.log('Fetched data:', data)
 
         if (data.length > 0) {
-          console.log('data', data[0].id)
           setFetchExerciseId(data[0].id)
           if (series.includes('TP') || series.includes('TS') || series.includes('BOS')) {
             const topSetData = data.filter(item => item.type === 'TS')

@@ -5,65 +5,67 @@ import { DrawerWorkout } from './DrawerWorkout'
 import SkeletonWorkouts from './SkeletonWorkouts'
 import { Plus } from 'lucide-react'
 
-const session = await auth()
-
-const diasSemana = [
-  'Domingo',
-  'Lunes',
-  'Martes',
-  'Miércoles',
-  'Jueves',
-  'Viernes',
-  'Sábado'
-]
-const fechaActual = new Date()
-const nombreDia = diasSemana[fechaActual.getDay()]
-
-async function getData () {
-  try {
-    const userEmail = session.user.email
-    const workouts = await getUserRoutinesWithExercises(userEmail)
-    // const progress = await getUserProgressLastWeek(userEmail)
-    const totalProgress = await getUserProgressLastWeekAndThreeWeeksBefore(userEmail)
-
-    const workoutsWithProgress = mergeProgressWithExercises(workouts, totalProgress)
-    return workoutsWithProgress
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    return { error: 'Failed to load data' }
-  }
-}
-
-function mergeProgressWithExercises (workouts, totalProgress) {
-  return workouts.map(workout => ({
-    ...workout,
-    routine_exercises: workout.routine_exercises.map(exercise => ({
-      ...exercise,
-      exercise_definitions: {
-        ...exercise.exercise_definitions,
-        progress: {
-          lastWeek: totalProgress.lastWeek.filter(p => p.exercise_id === exercise.exercise_definitions.id),
-          threeWeeksAgo: totalProgress.threeWeeksAgo.filter(p => p.exercise_id === exercise.exercise_definitions.id)
-        }
-      }
-    }))
-  }))
-}
-
-// function mergeProgressWithExercises (workouts, progress) {
-//   return workouts.map(workout => ({
-//     ...workout,
-//     routine_exercises: workout.routine_exercises.map(exercise => ({
-//       ...exercise,
-//       exercise_definitions: {
-//         ...exercise.exercise_definitions,
-//         progress: progress.filter(p => p.exercise_id === exercise.exercise_definitions.id)
-//       }
-//     }))
-//   }))
-// }
-
 export default async function Workouts () {
+  const session = await auth()
+
+  const diasSemana = [
+    'Domingo',
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado'
+  ]
+  const fechaActual = new Date()
+  const nombreDia = diasSemana[fechaActual.getDay()]
+
+  async function getData () {
+    try {
+      const userEmail = session.user.email
+      const workouts = await getUserRoutinesWithExercises(userEmail)
+      // const progress = await getUserProgressLastWeek(userEmail)
+      // const workoutsWithProgress = mergeProgressWithExercises(workouts, progress)
+
+      const totalProgress = await getUserProgressLastWeekAndThreeWeeksBefore(userEmail)
+      const workoutsWithProgress = mergeProgressWithExercises(workouts, totalProgress)
+
+      return workoutsWithProgress
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      return { error: 'Failed to load data' }
+    }
+  }
+
+  function mergeProgressWithExercises (workouts, totalProgress) {
+    return workouts.map(workout => ({
+      ...workout,
+      routine_exercises: workout.routine_exercises.map(exercise => ({
+        ...exercise,
+        exercise_definitions: {
+          ...exercise.exercise_definitions,
+          progress: {
+            lastWeek: totalProgress.lastWeek.filter(p => p.exercise_id === exercise.exercise_definitions.id),
+            threeWeeksAgo: totalProgress.threeWeeksAgo.filter(p => p.exercise_id === exercise.exercise_definitions.id)
+          }
+        }
+      }))
+    }))
+  }
+
+  // function mergeProgressWithExercises (workouts, progress) {
+  //   return workouts.map(workout => ({
+  //     ...workout,
+  //     routine_exercises: workout.routine_exercises.map(exercise => ({
+  //       ...exercise,
+  //       exercise_definitions: {
+  //         ...exercise.exercise_definitions,
+  //         progress: progress.filter(p => p.exercise_id === exercise.exercise_definitions.id)
+  //       }
+  //     }))
+  //   }))
+  // }
+
   const workouts = await getData()
 
   if (workouts.error) {
