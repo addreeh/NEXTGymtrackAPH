@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { Tabs } from '@/components/Tabs'
+import Tabs from '@/components/Tabs'
 import Image from 'next/image'
 
 export default async function Page () {

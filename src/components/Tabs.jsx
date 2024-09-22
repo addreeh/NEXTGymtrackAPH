@@ -21,8 +21,8 @@ export default function Tabs () {
             onClick={() => setActiveTab(tab.id)}
             className={`${
               activeTab === tab.id
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted hover:bg-muted-foreground/10'
+                ? 'bg-primary text-white'
+                : 'bg-muted text-white/70 hover:bg-muted-foreground/10'
             } relative px-3 py-1.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-md`}
           >
             {activeTab === tab.id && (
@@ -37,13 +37,13 @@ export default function Tabs () {
           </button>
         ))}
       </div>
-      <div className='bg-card text-card-foreground rounded-lg p-6 h-[200px] overflow-hidden'>
+      <div className='bg-card text-red-400 rounded-lg p-6 h-[200px] overflow-hidden'>
         <AnimatePresence mode='wait'>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.3 }}
           >
             {tabs.find((tab) => tab.id === activeTab)?.content}

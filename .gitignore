@@ -15,7 +15,12 @@ lerna-debug.log*
 
 *.tsbuildinfo
 next-env.d.ts
+.pnpm-lock.yaml
 
 .next
 .vercel
 .env*.local
+
+# Auto Generated PWA files
+**/public/sw.js
+**/public/workbox-*.js
