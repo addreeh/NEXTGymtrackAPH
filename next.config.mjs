@@ -1,4 +1,4 @@
-import MillionLint from '@million/lint'
+// import MillionLint from '@million/lint'
 
 const nextConfig = {
   output: 'standalone',
@@ -9,4 +9,5 @@ const nextConfig = {
   }
 }
 
-export default MillionLint.next({ rsc: true })(nextConfig)
+// export default MillionLint.next({ rsc: true })(nextConfig)
+export default nextConfig

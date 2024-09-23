@@ -81,7 +81,6 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
 
   useEffect(() => {
     const analyzeProgress = () => {
-      console.log('THREE', threeWeeksAgoExercises)
       if (lastWeekExercises.length === 0 || threeWeeksAgoExercises.length === 0) {
         return
       }
@@ -306,113 +305,200 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
     fetchData()
   }, [exerciseId, numberSeries, topSet, backOffSet, series])
 
-  const isAnyCheckboxChecked = () => {
-    // Verificar checkedTop
-    if (checkedTop.some(state => state === true)) {
-      return true
-    }
-
-    // Verificar checkedBack
-    if (checkedBack.some(state => state === true)) {
-      return true
-    }
-
-    // Verificar checkedStates
-    if (checkedStates.some(state => state === true)) {
-      return true
-    }
-
-    // Si ninguno está marcado, retornar false
-    return false
-  }
+  const [progressIds, setProgressIds] = useState({})
 
   const handleCheckboxChange = async (index, typeCheck) => {
-    if (isAnyCheckboxChecked()) {
-      await removeProgress(fetchExerciseId)
-
-      setCheckedTop(prevStates => prevStates.map(() => false))
-      setCheckedBack(prevStates => prevStates.map(() => false))
-      setCheckedStates(prevStates => prevStates.map(() => false))
-
-      setWeightsTop(prevWeights => prevWeights.map(() => ''))
-      setRepsTop(prevReps => prevReps.map(() => ''))
-      setWeightsBack(prevWeights => prevWeights.map(() => ''))
-      setRepsBack(prevReps => prevReps.map(() => ''))
-      setWeightInputs(prevWeights => prevWeights.map(() => ''))
-      setRepsInputs(prevReps => prevReps.map(() => ''))
-    } else {
-      if (typeCheck === 'TS') {
-        if (weightsTop[index] !== '' && repsTop[index] !== '') {
-          setCheckedTop(prevStates => {
-            const newStates = [...prevStates]
-            newStates[index] = !newStates[index]
-            return newStates
-          })
-          document.getElementById(`progressFormTop${index}`).requestSubmit()
+    if (typeCheck === 'TS') {
+      if (weightsTop[index] !== '' && repsTop[index] !== '') {
+        setCheckedTop(prevStates => {
+          const newStates = [...prevStates]
+          newStates[index] = !newStates[index]
+          return newStates
+        })
+        if (!checkedTop[index]) {
+          const form = document.getElementById(`progressFormTop${index}`)
+          const formData = new FormData(form)
+          try {
+            const insertedId = await handleProgress(formData)
+            setProgressIds(prev => ({ ...prev, [`top${index}`]: insertedId }))
+          } catch (error) {
+            toast.error('Error al guardar el progreso')
+          }
         } else {
-          toast.error('Tienes que insertar los datos', {
-            style: {
-              borderRadius: '10px',
-              background: '#333',
-              color: '#fff'
+          const progressId = progressIds[`top${index}`]
+          if (progressId) {
+            try {
+              await removeProgress(progressId)
+              setProgressIds(prev => {
+                const newIds = { ...prev }
+                delete newIds[`top${index}`]
+                return newIds
+              })
+            } catch (error) {
+              toast.error('Error al eliminar el progreso')
             }
+          }
+          setWeightsTop(prev => {
+            const newWeights = [...prev]
+            newWeights[index] = ''
+            return newWeights
           })
-        }
-      } else if (typeCheck === 'BOS') {
-        if (weightsBack[index] !== '' && repsBack[index] !== '') {
-          setCheckedBack(prevStates => {
-            const newStates = [...prevStates]
-            newStates[index] = !newStates[index]
-            return newStates
-          })
-          document.getElementById(`progressFormBack${index}`).requestSubmit()
-        } else {
-          toast.error('Tienes que insertar los datos', {
-            style: {
-              borderRadius: '10px',
-              background: '#333',
-              color: '#fff'
-            }
-          })
-        }
-      } else if (series.includes('SUPER SERIE') || series.includes('SUPERSERIE')) {
-        if (weightInputs[index] !== '' && repsInputs[index] !== '' &&
-          weightsBack[index] !== '' && repsBack[index] !== '') {
-          setCheckedStates(prevStates => {
-            const newStates = [...prevStates]
-            newStates[index] = !newStates[index]
-            return newStates
-          })
-          document.getElementById(`progressFormSuperSerie${index}`).requestSubmit()
-        } else {
-          toast.error('Tienes que insertar los datos', {
-            style: {
-              borderRadius: '10px',
-              background: '#333',
-              color: '#fff'
-            }
+          setRepsTop(prev => {
+            const newReps = [...prev]
+            newReps[index] = ''
+            return newReps
           })
         }
       } else {
-        if (weightInputs[index] !== '' && repsInputs[index] !== '') {
-          setCheckedStates(prevStates => {
-            const newStates = [...prevStates]
-            newStates[index] = !newStates[index]
-            return newStates
-          })
-          document.getElementById(`progressForm${index}`).requestSubmit()
+        toast.error('Tienes que insertar los datos')
+      }
+    } else if (typeCheck === 'BOS') {
+      if (weightsBack[index] !== '' && repsBack[index] !== '') {
+        setCheckedBack(prevStates => {
+          const newStates = [...prevStates]
+          newStates[index] = !newStates[index]
+          return newStates
+        })
+        if (!checkedBack[index]) {
+          const form = document.getElementById(`progressFormBack${index}`)
+          const formData = new FormData(form)
+
+          try {
+            const insertedId = await handleProgress(formData)
+            setProgressIds(prev => ({ ...prev, [`back${index}`]: insertedId }))
+          } catch (error) {
+            toast.error('Error al guardar el progreso')
+          }
         } else {
-          toast.error('Tienes que insertar los datos', {
-            style: {
-              borderRadius: '10px',
-              background: '#333',
-              color: '#fff'
+          const progressId = progressIds[`back${index}`]
+          if (progressId) {
+            try {
+              await removeProgress(progressId)
+              setProgressIds(prev => {
+                const newIds = { ...prev }
+                delete newIds[`back${index}`]
+                return newIds
+              })
+            } catch (error) {
+              toast.error('Error al eliminar el progreso')
             }
+          }
+          setWeightsBack(prev => {
+            const newWeights = [...prev]
+            newWeights[index] = ''
+            return newWeights
+          })
+          setRepsBack(prev => {
+            const newReps = [...prev]
+            newReps[index] = ''
+            return newReps
           })
         }
+      } else {
+        toast.error('Tienes que insertar los datos')
+      }
+    } else if (series.includes('SUPER SERIE') || series.includes('SUPERSERIE')) {
+      if (weightInputs[index] !== '' && repsInputs[index] !== '' &&
+          weightsBack[index] !== '' && repsBack[index] !== '') {
+        setCheckedStates(prevStates => {
+          const newStates = [...prevStates]
+          newStates[index] = !newStates[index]
+          return newStates
+        })
+        if (!checkedStates[index]) {
+          const form = document.getElementById(`progressFormSuperSerie${index}`)
+          const formData = new FormData(form)
+          try {
+            const insertedId = await handleProgress(formData)
+            setProgressIds(prev => ({ ...prev, [`superSerie${index}`]: insertedId }))
+          } catch (error) {
+            toast.error('Error al guardar el progreso')
+          }
+        } else {
+          const progressId = progressIds[`superSerie${index}`]
+          if (progressId) {
+            try {
+              await removeProgress(progressId)
+              setProgressIds(prev => {
+                const newIds = { ...prev }
+                delete newIds[`superSerie${index}`]
+                return newIds
+              })
+            } catch (error) {
+              toast.error('Error al eliminar el progreso')
+            }
+          }
+          setWeightInputs(prev => {
+            const newWeights = [...prev]
+            newWeights[index] = ''
+            return newWeights
+          })
+          setRepsInputs(prev => {
+            const newReps = [...prev]
+            newReps[index] = ''
+            return newReps
+          })
+          setWeightsBack(prev => {
+            const newWeights = [...prev]
+            newWeights[index] = ''
+            return newWeights
+          })
+          setRepsBack(prev => {
+            const newReps = [...prev]
+            newReps[index] = ''
+            return newReps
+          })
+        }
+      } else {
+        toast.error('Tienes que insertar los datos')
+      }
+    } else {
+      if (weightInputs[index] !== '' && repsInputs[index] !== '') {
+        setCheckedStates(prevStates => {
+          const newStates = [...prevStates]
+          newStates[index] = !newStates[index]
+          return newStates
+        })
+        if (!checkedStates[index]) {
+          const form = document.getElementById(`progressForm${index}`)
+          const formData = new FormData(form)
+          try {
+            const insertedId = await handleProgress(formData)
+            setProgressIds(prev => ({ ...prev, [`normal${index}`]: insertedId }))
+          } catch (error) {
+            toast.error('Error al guardar el progreso')
+          }
+        } else {
+          const progressId = progressIds[`normal${index}`]
+          if (progressId) {
+            try {
+              await removeProgress(progressId)
+              setProgressIds(prev => {
+                const newIds = { ...prev }
+                delete newIds[`normal${index}`]
+                return newIds
+              })
+            } catch (error) {
+              toast.error('Error al eliminar el progreso')
+            }
+          }
+          setWeightInputs(prev => {
+            const newWeights = [...prev]
+            newWeights[index] = ''
+            return newWeights
+          })
+          setRepsInputs(prev => {
+            const newReps = [...prev]
+            newReps[index] = ''
+            return newReps
+          })
+        }
+      } else {
+        toast.error('Tienes que insertar los datos')
       }
     }
   }
+
   if (isLoading) {
     if (series.includes('SUPERSERIE') || series.includes('SUPER SERIE')) {
       return (

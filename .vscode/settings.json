@@ -3,5 +3,6 @@
     "source.fixAll.eslint": "explicit",
     // "source.sortImports": "explicit"
 
-  }
+  },
+  "CodeGPT.apiKey": "Ollama"
 }

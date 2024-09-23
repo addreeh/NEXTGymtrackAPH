@@ -40,16 +40,18 @@ export default async function Workouts () {
   function mergeProgressWithExercises (workouts, totalProgress) {
     return workouts.map(workout => ({
       ...workout,
-      routine_exercises: workout.routine_exercises.map(exercise => ({
-        ...exercise,
-        exercise_definitions: {
-          ...exercise.exercise_definitions,
-          progress: {
-            lastWeek: totalProgress.lastWeek.filter(p => p.exercise_id === exercise.exercise_definitions.id),
-            threeWeeksAgo: totalProgress.threeWeeksAgo.filter(p => p.exercise_id === exercise.exercise_definitions.id)
+      routine_exercises: workout.routine_exercises
+        .map(exercise => ({
+          ...exercise,
+          exercise_definitions: {
+            ...exercise.exercise_definitions,
+            progress: {
+              lastWeek: totalProgress.lastWeek.filter(p => p.exercise_id === exercise.exercise_definitions.id),
+              threeWeeksAgo: totalProgress.threeWeeksAgo.filter(p => p.exercise_id === exercise.exercise_definitions.id)
+            }
           }
-        }
-      }))
+        }))
+        .sort((a, b) => a.order - b.order)
     }))
   }
 

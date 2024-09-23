@@ -51,7 +51,8 @@ export async function getUserRoutinesWithExercises (email) {
           name,
           muscle_group,
           exercise_type
-        )
+        ),
+        order
       )
     `)
     .eq('user_id', userId)
@@ -287,7 +288,7 @@ export async function insertProgress (email, newProgress) {
   if (error) {
     throw new Error(error.message)
   }
-  return data
+  return data[0].id
 }
 
 export async function updateProgress (id, updatedProgress) {
@@ -343,6 +344,33 @@ export async function getUser (email) {
     .single()
 
   if (data) return data
+  return null
+}
+
+export async function getUserByEmail (email) {
+  const { data } = await supabase
+    .from('users')
+    .select(`
+      id,
+      email,
+      gender,
+      age,
+      weight,
+      height
+    `)
+    .eq('email', email)
+    .single()
+
+  if (data) {
+    const user = {
+      gender: data.gender,
+      age: data.age,
+      weight: data.weight,
+      height: data.height
+    }
+
+    return user
+  }
   return null
 }
 
@@ -402,7 +430,7 @@ export async function getWeightProgress (email) {
       throw new Error('Error fetching weight progress')
     }
 
-    return { data: weightProgress }
+    return { weightProgress }
   } catch (error) {
     console.error('Error fetching weight progress:', error)
     return { data: null, error: error instanceof Error ? error : new Error('Unknown error') }

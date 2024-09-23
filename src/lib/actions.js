@@ -39,7 +39,14 @@ export async function handleProgress (formData) {
     }
   }
 
-  await insertProgress(email, newProgress)
+  try {
+    const insertedId = await insertProgress(email, newProgress)
+    console.log('Progreso insertado con ID:', insertedId)
+    return insertedId
+  } catch (error) {
+    console.error('Error insertando el progreso', error)
+    throw error
+  }
 }
 
 export async function getProgress (exerciseId) {
@@ -64,5 +71,11 @@ export async function getProgress (exerciseId) {
 }
 
 export async function removeProgress (progressId) {
-  await deleteProgress(progressId)
+  console.log(progressId)
+  try {
+    await deleteProgress(progressId)
+    console.log('Progreso eliminado')
+  } catch (error) {
+    console.error('Error eliminando el progreso', error)
+  }
 }
