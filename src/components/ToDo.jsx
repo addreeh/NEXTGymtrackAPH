@@ -66,7 +66,6 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
   const [weightsSuper, setWeightsSuper] = useState('')
   const [repsSuper, setRepsSuper] = useState('')
 
-  const [fetchExerciseId, setFetchExerciseId] = useState()
   useEffect(() => {
     const filterExercises = (progressData, setStateFunction) => {
       const filteredExercises = progressData.filter(
@@ -88,10 +87,8 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
       const lastWeekPerformance = lastWeekExercises[0]
       const threeWeeksAgoPerformances = threeWeeksAgoExercises.sort((a, b) => new Date(b.date) - new Date(a.date))
 
-      // Obtener el rendimiento más reciente de las tres semanas anteriores
       const mostRecentThreeWeeksAgoPerformance = threeWeeksAgoPerformances[0]
 
-      // Verificar si hay datos de al menos dos semanas diferentes
       const hasMultipleWeeks = threeWeeksAgoPerformances.some(perf =>
         new Date(perf.date).getTime() !== new Date(mostRecentThreeWeeksAgoPerformance.date).getTime()
       )
@@ -208,11 +205,10 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-        const data = await getProgress(exerciseId)
+        const data = await getProgress(exerciseId, workoutDay)
         console.log('Fetched data:', data)
 
         if (data.length > 0) {
-          setFetchExerciseId(data[0].id)
           if (series.includes('TP') || series.includes('TS') || series.includes('BOS')) {
             const topSetData = data.filter(item => item.type === 'TS')
             const backOffSetData = data.filter(item => item.type === 'BOS')

@@ -9,7 +9,7 @@ export async function handleProgress (formData) {
   const email = session.user.email
 
   const today = new Date()
-  const currentDayOfWeek = today.getDay() // 0 (Domingo) a 6 (Sábado)
+  const currentDayOfWeek = today.getDay()
   const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 
   const selectedDayIndex = daysOfWeek.indexOf(formData.get('workoutDay'))
@@ -25,7 +25,7 @@ export async function handleProgress (formData) {
     newProgress = {
       date: date.full,
       repetitions: [parseInt(formData.get('reps1')), parseInt(formData.get('reps2'))],
-      weight: [parseInt(formData.get('weight1')), parseInt(formData.get('weight2'))],
+      weight: [parseFloat(formData.get('weight1').replace(',', '.')), parseFloat(formData.get('weight2').replace(',', '.'))],
       exercise_definition_id: parseInt(formData.get('exerciseId')),
       type: formData.get('type') || 'lineal'
     }
@@ -33,7 +33,7 @@ export async function handleProgress (formData) {
     newProgress = {
       date: date.full,
       repetitions: [parseInt(formData.get('reps'))],
-      weight: [parseInt(formData.get('weight'))],
+      weight: [parseFloat(formData.get('weight').replace(',', '.'))],
       exercise_definition_id: parseInt(formData.get('exerciseId')),
       type: formData.get('type') || 'lineal'
     }
@@ -49,12 +49,23 @@ export async function handleProgress (formData) {
   }
 }
 
-export async function getProgress (exerciseId) {
+export async function getProgress (exerciseId, workoutDay) {
   const session = await auth()
   const email = session.user.email
 
-  const day = getFullDay(new Date())
-  const result = await getProgressByDate(email, exerciseId, day.full)
+  const today = new Date()
+  const currentDayOfWeek = today.getDay()
+  const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+
+  const selectedDayIndex = daysOfWeek.indexOf(workoutDay)
+  const daysDiff = selectedDayIndex - currentDayOfWeek
+
+  const selectedDate = new Date(today)
+  selectedDate.setDate(today.getDate() + daysDiff)
+
+  const date = getFullDay(selectedDate)
+
+  const result = await getProgressByDate(email, exerciseId, date.full)
   if (result.data) {
     const progress = result.data.map((item) => ({
       id: item.id,
