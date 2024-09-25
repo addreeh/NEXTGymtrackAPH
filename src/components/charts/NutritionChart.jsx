@@ -14,7 +14,7 @@ export default function WeightChart ({ data }) {
     }
   }, [data])
 
-  const COLORS = ['#3174F1', '#E92D18', '#F6AD01']
+  const COLORS = ['#232229', '#232229', '#232229']
 
   const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {

@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import WeightChart from './WeightChart'
-import NutritionChart from './NutritionChart'
-import { ArrowUp, ArrowDown, ScaleIcon } from 'lucide-react'
+import NutritionChart from '@/components/charts/NutritionChart'
+import TrainingChart from '@/components/charts/TrainingChart'
+import WeightChart from '@/components/charts/WeightChart'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowDown, ArrowUp, ScaleIcon } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 
 const tabs = [
-  { id: 'nutrition', label: 'Nutrition', content: 'Bienvenido a la página de nutrición. Aquí encontrarás información sobre dietas y alimentos saludables.', chart: NutritionChart },
   { id: 'weight', label: 'Weight', content: 'En esta sección podrás encontrar consejos para el control y mantenimiento de peso.', chart: WeightChart },
-  { id: 'training', label: 'Training', content: 'Descubre rutinas de entrenamiento y ejercicios para mantenerte en forma.', chart: WeightChart }
+  { id: 'nutrition', label: 'Nutrition', content: 'Bienvenido a la página de nutrición. Aquí encontrarás información sobre dietas y alimentos saludables.', chart: NutritionChart },
+  { id: 'training', label: 'Training', content: 'Descubre rutinas de entrenamiento y ejercicios para mantenerte en forma.', chart: TrainingChart }
 ]
 
 const WeightMetrics = ({ weightMetrics }) => (
@@ -63,8 +64,8 @@ const TrainingMetrics = ({ trainingData }) => (
   </div>
 )
 
-export default function Tabs () {
-  const [activeTab, setActiveTab] = useState(tabs[0].id)
+export default function Tabs ({ totalProgress }) {
+  const [activeTab, setActiveTab] = useState(tabs[2].id)
   const [windowSize, setWindowSize] = useState({ width: 500, height: 300 })
   const [chartData, setChartData] = useState({
     weight: [],
@@ -99,7 +100,6 @@ export default function Tabs () {
           }
         })
         const responseData = await response.json()
-        console.log('API Response:', responseData) // Para verificar la estructura de los datos
 
         setChartData({
           weight: responseData.weightData.map((item) => ({
@@ -175,7 +175,6 @@ export default function Tabs () {
 
   const nutritionMetrics = useMemo(() => {
     if (chartData.nutrition && chartData.nutrition.macro) {
-      console.log('Nutrition Data:', chartData.nutrition) // Verifica qué se está asignando
       return {
         dailyCalories: Math.round(chartData.nutrition.tmb || 0),
         carbs: Math.round(chartData.nutrition.macro.carbs || 0),
@@ -183,7 +182,6 @@ export default function Tabs () {
         fat: Math.round(chartData.nutrition.macro.fat || 0)
       }
     } else {
-      console.warn('No nutrition data available')
       return {
         dailyCalories: 0,
         carbs: 0,
@@ -237,14 +235,14 @@ export default function Tabs () {
   } else {
     return (
       <div className='w-full max-w-3xl mx-auto'>
-        <div className='flex space-x-1 justify-center items-center py-1 mb-4 bg-card-border-2 rounded-md mx-7'>
+        <div className='flex space-x-1 justify-center items-center py-1 mb-4 bg-bg-profile rounded-md mx-12'>
           {tabs.map((tab) => (
             <motion.button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`${
               activeTab === tab.id
-                ? 'bg-card-bg rounded-2xl text-white'
+                ? 'bg-bg-app rounded-2xl text-white'
                 : 'bg-muted text-white/70 hover:bg-muted-foreground/10'
             } relative px-3 py-1.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-md`}
               whileHover={{ scale: 1.05 }}
@@ -273,7 +271,7 @@ export default function Tabs () {
               transition={{ duration: 0.3 }}
               className='w-full h-[250px] rounded-3xl'
             >
-              {ActiveChart && <ActiveChart data={chartData[activeTab]} windowSize={windowSize} />}
+              {ActiveChart && <ActiveChart data={chartData[activeTab]} windowSize={windowSize} totalProgress={totalProgress} />}
             </motion.div>
           </AnimatePresence>
         </div>

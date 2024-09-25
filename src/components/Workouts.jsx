@@ -1,9 +1,9 @@
 import { auth } from '@/auth'
 import { getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutinesWithExercises } from '@/lib/supabase'
 import { Suspense } from 'react'
-import { DrawerWorkout } from './DrawerWorkout'
-import SkeletonWorkouts from './SkeletonWorkouts'
-import { Plus } from 'lucide-react'
+import { DrawerWorkout } from '@/components/DrawerWorkout'
+import SkeletonWorkouts from '@/components/skeletons/SkeletonWorkouts'
+import NewWorkout from '@/components/NewWorkout'
 
 export default async function Workouts () {
   const session = await auth()
@@ -55,19 +55,6 @@ export default async function Workouts () {
     }))
   }
 
-  // function mergeProgressWithExercises (workouts, progress) {
-  //   return workouts.map(workout => ({
-  //     ...workout,
-  //     routine_exercises: workout.routine_exercises.map(exercise => ({
-  //       ...exercise,
-  //       exercise_definitions: {
-  //         ...exercise.exercise_definitions,
-  //         progress: progress.filter(p => p.exercise_id === exercise.exercise_definitions.id)
-  //       }
-  //     }))
-  //   }))
-  // }
-
   const workouts = await getData()
 
   if (workouts.error) {
@@ -88,9 +75,7 @@ export default async function Workouts () {
         {workouts.map((workout, index) => (
           <DrawerWorkout key={index} workout={workout} />
         ))}
-        <div className='border-card-border flex h-[9.5rem] w-[9.5rem] justify-center items-center rounded-3xl border-2 bg-[#17171B] p-4 cursor-pointer ml-1 text-card-border'>
-          <Plus className='w-20 h-20' />
-        </div>
+        <NewWorkout />
       </main>
       <footer className='text-center py-4'>
         {workouts.some(workout => workout.day === nombreDia)

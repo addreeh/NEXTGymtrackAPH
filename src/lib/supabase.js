@@ -163,7 +163,8 @@ export async function getUserProgressLastWeekAndThreeWeeksBefore (email) {
     weight,
     exercise_definitions (
       id,
-      name
+      name,
+      muscle_group
     )
   `)
       .eq('user_id', userId)
@@ -172,7 +173,6 @@ export async function getUserProgressLastWeekAndThreeWeeksBefore (email) {
 
     if (progressError) throw new Error(progressError.message)
 
-    // Procesa los datos para separarlos en lastWeek y threeWeeksAgo
     const lastWeek = progressData
       .filter(entry => new Date(entry.date) >= previousSunday && new Date(entry.date) <= lastSaturday)
       .map(formatEntry)
@@ -194,7 +194,8 @@ function formatEntry (entry) {
     repetitions: entry.repetitions,
     weight: entry.weight,
     exercise_id: entry.exercise_definitions.id,
-    exercise_name: entry.exercise_definitions.name
+    exercise_name: entry.exercise_definitions.name,
+    muscle_group: entry.exercise_definitions.muscle_group
   }
 }
 

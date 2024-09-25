@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import Chart from './Chart'
-import ChartSkeleton from './ChartSkeleton' // Import the new ChartSkeleton component
-import DropdownExercises from './DropdownExercises'
+import Chart from '@/components/charts/Chart'
+import DropdownExercises from '@/components/DropdownExercises'
+import DropdownReps from '@/components/DropdownReps'
+import DropdownTime from '@/components/DropdownTime'
+import DropdownUsers from '@/components/DropdownUsers'
+import ChartSkeleton from '@/components/skeletons/ChartSkeleton' // Import the new ChartSkeleton component
 import { capitalizeWords } from '@/lib/mix'
-import DropdownReps from './DropdownReps'
-import DropdownTime from './DropdownTime'
-import DropdownUsers from './DropdownUsers'
+import React, { useEffect, useState } from 'react'
 
 export default function Progress ({ exercises, progress, users, currentUser }) {
   const [selectedExercise, setSelectedExercise] = useState()

@@ -1,9 +1,12 @@
 import { auth } from '@/auth'
 import Tabs from '@/components/Tabs'
+import { getUserProgressLastWeekAndThreeWeeksBefore } from '@/lib/supabase'
 import Image from 'next/image'
 
 export default async function Page () {
   const session = await auth()
+  const data = await getUserProgressLastWeekAndThreeWeeksBefore(session?.user?.email)
+  const totalProgress = data.lastWeek.concat(data.threeWeeksAgo)
 
   return (
     <>
@@ -41,7 +44,7 @@ export default async function Page () {
           <button className='bg-card-border-2 text-white py-4 px-8 rounded-2xl'>Edit</button>
         </div> */}
 
-        <Tabs />
+        <Tabs totalProgress={totalProgress} />
       </main>
     </>
   )

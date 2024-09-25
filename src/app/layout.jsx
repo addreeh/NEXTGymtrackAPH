@@ -34,7 +34,7 @@ export default async function RootLayout ({ children }) {
 
   return (
     <html lang='es'>
-      <body className={`${eina03.className} bg-bg-app min-h-screen max-h-screen flex flex-col`}>
+      <body className={`${eina03.className} bg-bg-app min-h-[100dvh] max-h-[100dvh] flex flex-col`}>
         <main className='flex-1 flex flex-col gap-6 overflow-y-auto p-5 overflow-y-hidden'>
           {children}
         </main>
