@@ -68,12 +68,7 @@ export default async function RootLayout ({ children }) {
         <meta name='generator' content={metadata.generator} />
         <link rel='manifest' href={metadata.manifest} />
         <meta name='keywords' content={metadata.keywords.join(', ')} />
-        {metadata.themeColor.map(({ media, color }, index) => (
-          <meta key={index} name='theme-color' media={media} content={color} />
-        ))}
-        {metadata.authors.map(({ name, url }, index) => (
-          <meta key={index} name='author' content={name} {...(url && { href: url })} />
-        ))}
+        <meta name='author' content="Adrián Pino" url="https://www.github.com/addreeh/" />
         <meta name='viewport' content={metadata.viewport} />
         {metadata.icons.map(({ rel, url }, index) => (
           <link key={index} rel={rel} href={url} />
