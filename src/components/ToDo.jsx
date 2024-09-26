@@ -66,6 +66,39 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
   const [weightsSuper, setWeightsSuper] = useState('')
   const [repsSuper, setRepsSuper] = useState('')
 
+  const handleMultiplyClick = (index, type) => {
+    let updatedWeights
+
+    switch (type) {
+      case 'normal':
+        updatedWeights = [...weightInputs]
+        updatedWeights[index] = (parseFloat(updatedWeights[index]) || 0) * 2
+        setWeightInputs(updatedWeights)
+        break
+
+      case 'top':
+        updatedWeights = [...weightsTop]
+        updatedWeights[index] = (parseFloat(updatedWeights[index]) || 0) * 2
+        setWeightsTop(updatedWeights)
+        break
+
+      case 'back':
+        updatedWeights = [...weightsBack]
+        updatedWeights[index] = (parseFloat(updatedWeights[index]) || 0) * 2
+        setWeightsBack(updatedWeights)
+        break
+
+      case 'super': {
+        const currentSuperValue = parseFloat(weightsSuper) || 0
+        setWeightsSuper((currentSuperValue * 2).toString())
+        break
+      }
+
+      default:
+        console.error('Invalid type')
+    }
+  }
+
   useEffect(() => {
     const filterExercises = (progressData, setStateFunction) => {
       const filteredExercises = progressData.filter(
@@ -621,32 +654,42 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
               <input type='hidden' name='type' value='SUPER SERIE' />
               <input type='hidden' name='setIndex' value={index} />
               <input type='hidden' name='workoutDay' value={workoutDay} />
+              <div className='w-14 h-12 relative'>
+                <motion.input
+                  value={weightsSuper[index]}
+                  type='tel'
+                  min={0}
+                  name='weight1'
+                  placeholder='weight'
+                  onChange={(e) => {
+                    const newWeightInputs = [...weightInputs]
+                    newWeightInputs[index] = e.target.value
+                    setWeightInputs(newWeightInputs)
+                  }}
+                  animate={{
+                    x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
+                    color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
+                  }}
+                  initial={false}
+                  transition={{
+                    duration: 0.3,
+                    ease: 'easeOut'
+                  }}
+                  className='w-full h-full rounded-l-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text'
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleMultiplyClick(index, 'super')
+                  }}
+                  className='absolute top-0 right-0 h-full w-4 border-[3px] border-l-[1px] border-input-border bg-input-border text-white'
+                >
+                  x
+                </button>
+              </div>
               <motion.input
-                value={weightsSuper[index]}
-                type='number'
-                inputMode='numeric'
-                min={0}
-                name='weight1'
-                className='w-14 h-12 rounded-l-full border-y-[3px] border-l-[3px] border-r-[2px] border-input-border text-center text-white placeholder:text-popover-text focus:outline-none'
-                placeholder='weight'
-                onChange={(e) => {
-                  const newWeightInputs = [...weightInputs]
-                  newWeightInputs[index] = e.target.value
-                  setWeightInputs(newWeightInputs)
-                }}
-                animate={{
-                  x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
-                  color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
-                }}
-                initial={false}
-                transition={{
-                  duration: 0.3,
-                  ease: 'easeOut'
-                }}
-              />
-              <motion.input
-                type='number'
-                inputMode='numeric'
+                type='tel'
                 min={1}
                 name='reps1'
                 className='w-14 h-12 rounded-r-full border-y-[3px] border-r-[3px] border-l-[2px] border-input-border text-center text-white placeholder:text-popover-text  focus:outline-none'
@@ -670,32 +713,42 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
             </div>
             <Unlink2 color='#424249' />
             <div className='flex flex-row'>
+              <div className='relative w-14 h-12'>
+                <motion.input
+                  type='tel'
+                  min={0}
+                  name='weight2'
+                  placeholder='weight'
+                  value={weightsSuper[index]}
+                  onChange={(e) => {
+                    const newWeightsBack = [...weightsBack]
+                    newWeightsBack[index] = e.target.value
+                    setWeightsBack(newWeightsBack)
+                  }}
+                  animate={{
+                    x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
+                    color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
+                  }}
+                  initial={false}
+                  transition={{
+                    duration: 0.3,
+                    ease: 'easeOut'
+                  }}
+                  className='w-full h-full rounded-l-full border-y-[3px] border-l-[3px] border-r-[2px] border-input-border text-center text-white placeholder:text-popover-text focus:outline-none'
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleMultiplyClick(index, 'super')
+                  }}
+                  className='absolute top-0 right-0 h-full w-4 border-[3px] border-l-[1px] border-input-border bg-input-border text-white'
+                >
+                  x
+                </button>
+              </div>
               <motion.input
-                type='number'
-                inputMode='numeric'
-                min={0}
-                name='weight2'
-                className='w-14 h-12 rounded-l-full border-y-[3px] border-l-[3px] border-r-[2px] border-input-border text-center text-white placeholder:text-popover-text focus:outline-none'
-                placeholder='weight'
-                value={weightsSuper[index]}
-                onChange={(e) => {
-                  const newWeightsBack = [...weightsBack]
-                  newWeightsBack[index] = e.target.value
-                  setWeightsBack(newWeightsBack)
-                }}
-                animate={{
-                  x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
-                  color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
-                }}
-                initial={false}
-                transition={{
-                  duration: 0.3,
-                  ease: 'easeOut'
-                }}
-              />
-              <motion.input
-                type='number'
-                inputMode='numeric'
+                type='tel'
                 min={1}
                 name='reps2'
                 className='w-14 h-12 rounded-r-full border-y-[3px] border-r-[3px] border-l-[2px] border-input-border text-center text-white placeholder:text-popover-text  focus:outline-none'
@@ -784,27 +837,43 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
             <input type='hidden' name='workoutDay' value={workoutDay} />
             <input type='hidden' name='type' value={type} />
 
-            <motion.input
-              value={weightInputs[index]}
-              type='text' name='weight' placeholder='0 kg' animate={{
-                x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
-                color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
-              }}
-              initial={false}
-              transition={{
-                duration: 0.3,
-                ease: 'easeOut'
-              }}
-              onChange={(e) => {
-                const newWeightInputs = [...weightInputs]
-                newWeightInputs[index] = e.target.value
-                setWeightInputs(newWeightInputs)
-              }}
-              className='w-20 h-14 rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text'
-            />
+            <div className='relative w-20 h-14'>
+              <motion.input
+                value={weightInputs[index]}
+                type='tel'
+                name='weight'
+                placeholder='0 kg'
+                animate={{
+                  x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
+                  color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
+                }}
+                initial={false}
+                transition={{
+                  duration: 0.3,
+                  ease: 'easeOut'
+                }}
+                onChange={(e) => {
+                  const newWeightInputs = [...weightInputs]
+                  newWeightInputs[index] = e.target.value
+                  setWeightInputs(newWeightInputs)
+                }}
+                className='w-full h-full rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text pr-8'
+              />
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleMultiplyClick(index, 'normal')
+                }}
+                className='absolute top-0 right-0 h-full w-8 rounded-r-full border-[3px] border-l-[1px] border-input-border bg-input-border text-white'
+              >
+                x
+              </button>
+            </div>
+
             <motion.input
               value={repsInputs[index]}
-              type='text' name='reps' placeholder='0 reps' animate={{
+              type='tel' name='reps' placeholder='0 reps' animate={{
                 x: checkedStates[index] ? [0, -4, 0] : [0, 4, 0],
                 color: checkedStates[index] ? '#FFFFFF' : '#FFFFFF'
               }}
@@ -888,27 +957,39 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
               <input type='hidden' name='type' value={typeTop} />
               <input type='hidden' name='workoutDay' value={workoutDay} />
 
-              <motion.input
-                value={weightsTop[index]}
-                type='text' name='weight' placeholder='0 kg' animate={{
-                  x: checkedTop[index] ? [0, -4, 0] : [0, 4, 0],
-                  color: checkedTop[index] ? '#FFFFFF' : '#FFFFFF'
-                }}
-                initial={false}
-                transition={{
-                  duration: 0.3,
-                  ease: 'easeOut'
-                }}
-                onChange={(e) => {
-                  const newWeightInputs = [...weightsTop]
-                  newWeightInputs[index] = e.target.value
-                  setWeightsTop(newWeightInputs)
-                }}
-                className='w-20 h-14 rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text'
-              />
+              <div className='relative w-20 h-14'>
+                <motion.input
+                  value={weightsTop[index]}
+                  type='tel' name='weight' placeholder='0 kg' animate={{
+                    x: checkedTop[index] ? [0, -4, 0] : [0, 4, 0],
+                    color: checkedTop[index] ? '#FFFFFF' : '#FFFFFF'
+                  }}
+                  initial={false}
+                  transition={{
+                    duration: 0.3,
+                    ease: 'easeOut'
+                  }}
+                  onChange={(e) => {
+                    const newWeightInputs = [...weightsTop]
+                    newWeightInputs[index] = e.target.value
+                    setWeightsTop(newWeightInputs)
+                  }}
+                  className='w-full h-full rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text pr-8'
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleMultiplyClick(index, 'top')
+                  }}
+                  className='absolute top-0 right-0 h-full w-8 rounded-r-full border-[3px] border-l-[1px] border-input-border bg-input-border text-white'
+                >
+                  x
+                </button>
+              </div>
               <motion.input
                 value={repsTop[index]}
-                type='text' name='reps' placeholder='0 reps' animate={{
+                type='tel' name='reps' placeholder='0 reps' animate={{
                   x: checkedTop[index] ? [0, -4, 0] : [0, 4, 0],
                   color: checkedTop[index] ? '#FFFFFF' : '#FFFFFF'
                 }}
@@ -990,27 +1071,39 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
               <input type='hidden' name='type' value={typeBack} />
               <input type='hidden' name='workoutDay' value={workoutDay} />
 
-              <motion.input
-                value={weightsBack[index]}
-                type='text' name='weight' placeholder='0 kg' animate={{
-                  x: checkedBack[index] ? [0, -4, 0] : [0, 4, 0],
-                  color: checkedBack[index] ? '#FFFFFF' : '#FFFFFF'
-                }}
-                initial={false}
-                transition={{
-                  duration: 0.3,
-                  ease: 'easeOut'
-                }}
-                onChange={(e) => {
-                  const newWeightInputs = [...weightsBack]
-                  newWeightInputs[index] = e.target.value
-                  setWeightsBack(newWeightInputs)
-                }}
-                className='w-20 h-14 rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text'
-              />
+              <div className='relative w-20 h-14'>
+                <motion.input
+                  value={weightsBack[index]}
+                  type='tel' name='weight' placeholder='0 kg' animate={{
+                    x: checkedBack[index] ? [0, -4, 0] : [0, 4, 0],
+                    color: checkedBack[index] ? '#FFFFFF' : '#FFFFFF'
+                  }}
+                  initial={false}
+                  transition={{
+                    duration: 0.3,
+                    ease: 'easeOut'
+                  }}
+                  onChange={(e) => {
+                    const newWeightInputs = [...weightsBack]
+                    newWeightInputs[index] = e.target.value
+                    setWeightsBack(newWeightInputs)
+                  }}
+                  className='w-full h-full rounded-full border-[3px] border-input-border text-center text-white placeholder:text-popover-text pr-8'
+                />
+
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleMultiplyClick(index, 'back')
+                  }}
+                  className='absolute top-0 right-0 h-full w-8 rounded-r-full border-[3px] border-l-[1px] border-input-border bg-input-border text-white'
+                >
+                  x
+                </button>
+              </div>
               <motion.input
                 value={repsBack[index]}
-                type='text' name='reps' placeholder='0 reps' animate={{
+                type='tel' name='reps' placeholder='0 reps' animate={{
                   x: checkedBack[index] ? [0, -4, 0] : [0, 4, 0],
                   color: checkedBack[index] ? '#FFFFFF' : '#FFFFFF'
                 }}

@@ -35,16 +35,15 @@ export const viewport = {
 }
 
 export const metadata = {
-  title: 'PWA with Next 14',
-  description: 'PWA application with Next 14',
+  title: 'GymtrackAPH',
+  description: 'Effortlessly track your gym progress! Log workouts, monitor gains, and get personalized weight recommendations anytime, anywhere!',
   generator: 'Next.js',
   manifest: '/manifest.json',
-  keywords: ['nextjs', 'nextjs14', 'next14', 'pwa', 'next-pwa'],
+  keywords: ['gymtrackaph', 'gym', 'fitness', 'weight', 'aph'],
   authors: [
-    { name: 'Alldo Faiz Ramadhani' },
     {
-      name: 'Alldo Faiz Ramadhani',
-      url: 'https://www.linkedin.com/in/alldofaiz/'
+      name: 'Adrián Pino',
+      url: 'https://www.linkedin.com/in/adrianpinohidalgo/'
     }
   ],
   icons: [

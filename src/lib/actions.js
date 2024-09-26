@@ -5,6 +5,7 @@ import { deleteProgress, getProgressByDate, insertProgress } from './supabase'
 import { getFullDay } from './date'
 
 export async function handleProgress (formData) {
+  console.warn('DENTRO')
   const session = await auth()
   const email = session.user.email
 

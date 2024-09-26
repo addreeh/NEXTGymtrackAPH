@@ -7,7 +7,7 @@ import DropdownTime from '@/components/DropdownTime'
 import DropdownUsers from '@/components/DropdownUsers'
 import ChartSkeleton from '@/components/skeletons/ChartSkeleton' // Import the new ChartSkeleton component
 import { capitalizeWords } from '@/lib/mix'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 export default function Progress ({ exercises, progress, users, currentUser }) {
   const [selectedExercise, setSelectedExercise] = useState()
@@ -77,6 +77,12 @@ export default function Progress ({ exercises, progress, users, currentUser }) {
     getData()
   }, [selectedExercise, selectedTime, progress, selectedUser, currentUser, initialLoad])
 
+  const [searchItem, setSearchItem] = useState('')
+
+  const handleInputChange = useCallback((e) => {
+    setSearchItem(e.target.value)
+  }, [])
+
   return (
     <>
       <header className='flex flex-row w-full items-center justify-between'>
@@ -88,7 +94,13 @@ export default function Progress ({ exercises, progress, users, currentUser }) {
             This section will show you your progress
           </p>
         </section>
-        <DropdownExercises exercises={exercises} selectedExercise={selectedExercise} setSelectedExercise={setSelectedExercise} />
+        <DropdownExercises
+          exercises={exercises}
+          selectedExercise={selectedExercise}
+          setSelectedExercise={setSelectedExercise}
+          searchItem={searchItem}
+          handleInputChange={handleInputChange}
+        />
       </header>
       <main className='w-full flex flex-col gap-8'>
         <div className='flex flex-row gap-5'>

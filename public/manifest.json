@@ -1,11 +1,11 @@
 {
-  "name": "PWA with Next 14",
-  "short_name": "NextPWA",
-  "description": "PWA application with Next 14",
+  "name": "GymtrackAPH",
+  "short_name": "GymtrackAPH",
+  "description": "Effortlessly track your gym progress! Log workouts, monitor gains, and get personalized weight recommendations anytime, anywhere!",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#0A0A0C",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
