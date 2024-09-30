@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutinesWithExercises } from '@/lib/supabase'
+import { getExercises, getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutinesWithExercises } from '@/lib/supabase'
 import { Suspense } from 'react'
 import { DrawerWorkout } from '@/components/DrawerWorkout'
 import SkeletonWorkouts from '@/components/skeletons/SkeletonWorkouts'
@@ -29,8 +29,9 @@ export default async function Workouts () {
 
       const totalProgress = await getUserProgressLastWeekAndThreeWeeksBefore(userEmail)
       const workoutsWithProgress = mergeProgressWithExercises(workouts, totalProgress)
+      const exercises = await getExercises()
 
-      return workoutsWithProgress
+      return { workoutsWithProgress, exercises }
     } catch (error) {
       console.error('Error fetching data:', error)
       return { error: 'Failed to load data' }
@@ -55,9 +56,9 @@ export default async function Workouts () {
     }))
   }
 
-  const workouts = await getData()
+  const { workoutsWithProgress, exercises } = await getData()
 
-  if (workouts.error) {
+  if (workoutsWithProgress.error) {
     return (
       <p className='text-footer-text text-sm'>
         No tienes <span className='font-bold'>ningún</span> entreno programado
@@ -72,14 +73,14 @@ export default async function Workouts () {
     }
     >
       <main className='flex-grow grid w-full grid-cols-2 items-center justify-between gap-5'>
-        {workouts.map((workout, index) => (
+        {workoutsWithProgress.map((workout, index) => (
           <DrawerWorkout key={index} workout={workout} />
         ))}
-        <NewWorkout />
+        <NewWorkout exercises={exercises} />
       </main>
       <footer className='text-center py-4'>
-        {workouts.some(workout => workout.day === nombreDia)
-          ? (workouts
+        {workoutsWithProgress.some(workout => workout.day === nombreDia)
+          ? (workoutsWithProgress
               .filter(workout => workout.day === nombreDia)
               .map(workout =>
                 <p key={workout.id} className='text-footer-text text-sm'>

@@ -19,6 +19,7 @@ import { Chest } from '@/svg/Chest'
 import { Legs } from '@/svg/Legs'
 import { Shoulder } from '@/svg/Shoulder'
 import { ArrowLeft, ArrowRight, Info } from 'lucide-react'
+import { DrawerEditWorkout } from './DrawerEditWorkout'
 
 function findMaxWeightProgress (exercise) {
   if (!exercise.progress.lastWeek || exercise.progress.lastWeek.length === 0) {
@@ -57,7 +58,6 @@ export function DrawerWorkout ({ workout }) {
                   <g id='SVGRepo_iconCarrier'>
                     <path d='M1,6A1,1,0,0,1,2,5H12a1,1,0,0,1,0,2H2A1,1,0,0,1,1,6ZM22,5H17V3a1,1,0,0,0-2,0V9a1,1,0,0,0,2,0V7h5a1,1,0,0,0,0-2Zm0,12H13V15a1,1,0,0,0-2,0v6a1,1,0,0,0,2,0V19h9a1,1,0,0,0,0-2ZM8,19a1,1,0,0,0,0-2H2a1,1,0,0,0,0,2Z' />
                   </g>
-
                 </svg>
               </div>
             </div>
@@ -88,19 +88,23 @@ export function DrawerWorkout ({ workout }) {
                       currentPage === 0 && setOpen(false)
                     }}
                   >
-                    <ArrowLeft />
+                    <ArrowLeft size={30} strokeWidth={2.5} />
                   </motion.div>
-                  {selectedExercise && selectedExercise.exercise_definitions.progress.length > 0 &&
-                    <motion.button
-                      initial={currentPage === 1 ? { opacity: 0, scale: 0.5 } : { opacity: 0 }}
-                      animate={currentPage === 1 ? { opacity: 1, scale: 1 } : { opacity: 0 }}
-                      transition={currentPage === 1 ? { duration: 0.5 } : { duration: 0 }}
-                      className='bg-svg-bg text-white rounded-full font-semibold p-3 relative'
-                      onClick={() => setInfoOpen(!infoOpen)}
-                    >
-                      <Info />
-                      <InfoPopover isOpen={infoOpen} onClose={() => setInfoOpen(false)} selectedExercise={selectedExercise} />
-                    </motion.button>}
+                  <div>
+
+                    {selectedExercise && selectedExercise.exercise_definitions.progress.length > 0 &&
+                      <motion.button
+                        initial={currentPage === 1 ? { opacity: 0, scale: 0.5 } : { opacity: 0 }}
+                        animate={currentPage === 1 ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+                        transition={currentPage === 1 ? { duration: 0.5 } : { duration: 0 }}
+                        className='bg-svg-bg text-white rounded-full font-semibold p-3 relative'
+                        onClick={() => setInfoOpen(!infoOpen)}
+                      >
+                        <Info />
+                        <InfoPopover isOpen={infoOpen} onClose={() => setInfoOpen(false)} selectedExercise={selectedExercise} />
+                      </motion.button>}
+                    <DrawerEditWorkout workout={workout} />
+                  </div>
                 </div>
                 <AnimatePresence initial={false} mode='wait'>
                   <motion.div
@@ -120,7 +124,7 @@ export function DrawerWorkout ({ workout }) {
                           <Drawer.Description className='text-white'>
                             {workout.day}
                           </Drawer.Description>
-                          <div className='flex flex-col gap-4 h-full overflow-auto pb-10' id='exercises'>
+                          <div className='flex flex-col gap-4 h-full overflow-auto' id='exercises'>
                             {workout && workout.routine_exercises.map((exercise, index) => (
                               <div
                                 key={`${exercise.exercise_definitions.id}-${index}`}
@@ -144,7 +148,7 @@ export function DrawerWorkout ({ workout }) {
                                   <div className='flex flex-col justify-center'>
                                     <p className='text-white font-semibold'>{capitalizeWords(exercise.exercise_definitions.name)}</p>
                                     <p className='text-white text-sm'>
-                                      {(!exercise.series.includes('SST') && !exercise.series.includes('TP') && exercise.series.includes('TS') && !exercise.series.includes('BOS')) ? capitalizeWords(exercise.series) : exercise.series}
+                                      {!exercise.series ? '' : (!exercise.series.includes('SST') && !exercise.series.includes('TP') && exercise.series.includes('TS') && !exercise.series.includes('BOS')) ? capitalizeWords(exercise.series) : exercise.series}
                                     </p>
                                   </div>
                                 </div>

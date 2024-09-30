@@ -480,3 +480,49 @@ export async function getProgressByMuscleGroup (userId) {
     return []
   }
 }
+
+export async function getExercises () {
+  const { data, error } = await supabase
+    .from('exercise_definitions')
+    .select()
+
+  if (error != null) throw new Error(error.message)
+  return data
+}
+
+export async function insertRoutine (email, newRoutine) {
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .single()
+
+  if (userError != null) throw new Error(userError.message)
+  if (userData == null) throw new Error('User not found')
+
+  const userId = userData.id
+
+  newRoutine.user_id = userId
+
+  const { data, error } = await supabase
+    .from('routines')
+    .insert(newRoutine)
+    .select()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+  return data[0].id
+}
+
+export async function insertRoutineExercise (routineExercises) {
+  const { data, error } = await supabase
+    .from('routine_exercises')
+    .insert(routineExercises)
+    .select()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+  return data
+}

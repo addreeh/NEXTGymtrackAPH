@@ -1,11 +1,10 @@
 'use server'
 
 import { auth } from '@/auth'
-import { deleteProgress, getProgressByDate, insertProgress } from './supabase'
+import { deleteProgress, getProgressByDate, insertProgress, insertRoutine, insertRoutineExercise } from './supabase'
 import { getFullDay } from './date'
 
-export async function handleProgress (formData) {
-  console.warn('DENTRO')
+export async function createProgress (formData) {
   const session = await auth()
   const email = session.user.email
 
@@ -86,5 +85,36 @@ export async function removeProgress (progressId) {
     await deleteProgress(progressId)
   } catch (error) {
     console.error('Error eliminando el progreso', error)
+  }
+}
+
+export async function createRoutine (formData) {
+  const session = await auth()
+  const email = session.user.email
+  console.warn(formData)
+
+  try {
+    const routine = {
+      name: formData.workoutName,
+      day: formData.selectedDays[0] || formData.selectedDays
+    }
+
+    console.log('R', routine)
+
+    const routineId = await insertRoutine(email, routine)
+
+    console.log('RID', routineId)
+
+    const routineExercises = formData.selectedExercises.map(exercise => ({
+      routine_id: routineId,
+      exercise_id: exercise.id
+    }))
+
+    await insertRoutineExercise(routineExercises)
+
+    return true
+  } catch (error) {
+    console.error('Error insertando la rutina', error)
+    return false
   }
 }

@@ -3,7 +3,6 @@ import { getCalories } from '@/lib/calories'
 import { getUserByEmail, getWeightProgress } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
 
-// To handle a GET request to /api
 export async function GET (request) {
   const session = await auth()
   const userEmail = session.user.email
