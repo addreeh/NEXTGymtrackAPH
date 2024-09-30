@@ -20,6 +20,7 @@ next-env.d.ts
 .next
 .vercel
 .env*.local
+pnpm-lock.yaml
 
 # Auto Generated PWA files
 **/public/sw.js
