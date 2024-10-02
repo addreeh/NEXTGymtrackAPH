@@ -93,3 +93,12 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+#hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#hide-scroll::-webkit-scrollbar {
+  width: 0;
+}

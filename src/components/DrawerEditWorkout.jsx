@@ -1,10 +1,12 @@
 'use client'
 
-import { SlidersHorizontal, ArrowLeft, Trash, Calendar, ChevronRight, Crosshair } from 'lucide-react'
+import { ArrowLeft, Calendar, ChevronRight, Crosshair } from 'lucide-react'
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
 import { Drawer } from 'vaul'
 import { motion, AnimatePresence } from 'framer-motion'
 import { capitalizeWords } from '@/lib/mix'
+import { Modal } from './Modal'
+import { editRoutine, insertExercisesRoutine } from '@/lib/actions'
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -23,15 +25,30 @@ const tickVariants = {
   unchecked: { pathLength: 0 }
 }
 
-export function DrawerEditWorkout ({ workout }) {
-  console.log(workout)
-  const [open, setOpen] = useState(true)
+const pageVariants = {
+  enter: {
+    x: '0%', opacity: 1
+  },
+  animate: {
+    x: 0, opacity: 1
+  },
+  exit: {
+    x: '-20%', opacity: 0, transition: { duration: 0.2 }
+  }
+}
+
+const pageTransition = {
+  delay: 0, duration: 0.2
+}
+
+export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, children }) {
   const [workoutName, setWorkoutName] = useState(workout.name)
   const [currentPage, setCurrentPage] = useState(0)
   const [selectedDays, setSelectedDays] = useState({ [workout.day]: true })
   const [selectedExercises, setSelectedExercises] = useState([])
   const [exercises, setExercises] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [differenceExercises, setDifferenceExercises] = useState({})
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,10 +57,8 @@ export function DrawerEditWorkout ({ workout }) {
         const response = await fetch('/api/workout')
         const responseData = await response.json()
 
-        console.log('API response:', responseData)
         setExercises(responseData.exercises)
 
-        // Pre-seleccionar ejercicios que están en workout.routine_exercises
         const preSelectedExercises = {}
         workout.routine_exercises.forEach(routineExercise => {
           const exerciseId = routineExercise.exercise_definitions.id
@@ -67,6 +82,10 @@ export function DrawerEditWorkout ({ workout }) {
   }, [])
 
   const handleExercisesChange = useCallback((id) => {
+    setDifferenceExercises(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
     setSelectedExercises(prev => ({
       ...prev,
       [id]: !prev[id]
@@ -125,13 +144,34 @@ export function DrawerEditWorkout ({ workout }) {
     ))
   }
 
+  const handleExercisesChangeExit = async () => {
+    const selectedExercisesData = []
+
+    Object.entries(differenceExercises).forEach(([id, isSelected]) => {
+      if (isSelected) {
+        const exercise = exercises.find(e => e.id === parseInt(id))
+        if (exercise) {
+          selectedExercisesData.push(exercise)
+        }
+      }
+    })
+
+    await insertExercisesRoutine(workout.id, selectedExercisesData)
+  }
+
+  const handleWorkoutNameChange = async (event) => {
+    try {
+      await editRoutine(workout.id, workoutName)
+    } catch (error) {
+      console.error('Error editing routine:', error)
+    }
+  }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Drawer.Root open={open} shouldScaleBackground>
+      <Drawer.Root open={editOpen} shouldScaleBackground>
         <Drawer.Trigger asChild>
-          <div className='rounded-full bg-svg-bg p-2.5 text-white cursor-pointer' onClick={() => setOpen(true)}>
-            <SlidersHorizontal width={20} height={20} />
-          </div>
+          {children}
         </Drawer.Trigger>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 rounded-3xl bg-drawer-overlay border-2 border-drawer-border' />
@@ -143,78 +183,109 @@ export function DrawerEditWorkout ({ workout }) {
                   <motion.div
                     animate={{ rotate: currentPage === 0 ? -90 : 0 }}
                     transition={{ duration: 0.3 }}
+                    className='cursor-pointer'
                     onClick={() => {
-                      if (currentPage > 0) setCurrentPage(currentPage - 1)
-                      else setOpen(false)
+                      console.warn(currentPage)
+                      if (currentPage === 0) setEditOpen(false)
+                      else if (currentPage === 1) {
+                        setCurrentPage(0)
+                        console.log(selectedDays)
+                      } else if (currentPage === 2) {
+                        handleExercisesChangeExit()
+                        setCurrentPage(0)
+                      }
+                      // if (currentPage === 1) {
+                      //   console.log(selectedDays)
+                      //   console.log('DKFJ')
+                      // }
+                      // if (currentPage === 2) {
+                      //   console.log('PEPE')
+                      //   handleExercisesChangeExit()
+                      // }
+                      // if (currentPage > 0) {
+                      //   console.log('fdsjlkfj')
+                      //   setCurrentPage(0)
+                      // } else {
+                      //   console.log('FUERa')
+                      //   setEditOpen(false)
+                      // }
                     }}
                   >
                     <ArrowLeft />
                   </motion.div>
-                  <div className='rounded-full bg-red-500 p-2.5 text-white cursor-pointer' onClick={() => setOpen(true)}>
-                    <Trash size={20} strokeWidth={2} />
-                  </div>
+                  <Modal workout={workout.id} setOpen={setOpen} setEditOpen={setEditOpen} />
                 </div>
                 <AnimatePresence initial={false} mode='wait'>
-                  <motion.div
-                    initial={{ x: '20%', opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: '-20%', opacity: 0, transition: { duration: 0.2 } }}
-                    transition={{ delay: 0, duration: 0.2 }}
-                    className='flex flex-col gap-4'
-                  >
-                    {currentPage === 0 && (
-                      <>
-                        <Drawer.Title className='font-bold text-4xl text-white'>
-                          Settings
-                        </Drawer.Title>
-                        <Drawer.Description className='text-white/75 text-xs'>
-                          Edit settings for this workout
-                        </Drawer.Description>
-                        <motion.div
-                          key={currentPage}
-                          initial={{ x: '20%', opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          exit={{ x: '-20%', opacity: 0, transition: { duration: 0.2 } }}
-                          transition={{ delay: 0, duration: 0.2 }}
-                          className='flex flex-col gap-4 px-2'
-                        >
-                          <input
-                            type='text'
-                            placeholder='Enter a name'
-                            className='bg-transparent border-b-2 border-white/75 border-t-0 border-l-0 border-r-0 py-4 text-white'
-                            value={workoutName}
-                            onChange={(e) => setWorkoutName(e.target.value)}
-                          />
-                          <div className='flex flex-col gap-6 w-full pt-4'>
-                            <div className='flex flex-row text-white w-full gap-4 cursor-pointer' onClick={() => setCurrentPage(1)}>
-                              <div className='rounded-full bg-svg-bg p-2.5 text-white cursor-pointer'>
-                                <Calendar size={22} strokeWidth={2} />
-                              </div>
-                              <div className='w-full justify-between flex flex-row items-center'>
-                                <div>
-                                  <p className='text-white text-sm font-semibold'>Schedule</p>
-                                  <p className='text-white/75 text-[10px]'>{workout.day}</p>
-                                </div>
-                                <ChevronRight size={20} strokeWidth={2} className='text-white/30' />
-                              </div>
+
+                  {currentPage === 0 && (
+                    <motion.div
+                      key='page0'
+                      initial='enter'
+                      animate='center'
+                      exit='exit'
+                      variants={pageVariants}
+                      transition={pageTransition}
+                    >
+                      <Drawer.Title className='font-bold text-4xl text-white'>
+                        Settings
+                      </Drawer.Title>
+                      <Drawer.Description className='text-white/75 text-xs'>
+                        Edit settings for this workout
+                      </Drawer.Description>
+                      <motion.div
+                        key={currentPage}
+                        initial={{ x: '20%', opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: '-20%', opacity: 0, transition: { duration: 0.2 } }}
+                        transition={{ delay: 0, duration: 0.2 }}
+                        className='flex flex-col gap-4 px-2'
+                      >
+                        <input
+                          type='text'
+                          placeholder='Enter a name'
+                          className='bg-transparent border-b-2 border-white/75 border-t-0 border-l-0 border-r-0 py-4 text-white'
+                          value={workoutName}
+                          onChange={(e) => setWorkoutName(e.target.value)}
+                          onBlur={handleWorkoutNameChange}
+                        />
+                        <div className='flex flex-col gap-6 w-full pt-4'>
+                          <div className='flex flex-row text-white w-full gap-4 cursor-pointer' onClick={() => setCurrentPage(1)}>
+                            <div className='rounded-full bg-svg-bg p-2.5 text-white cursor-pointer'>
+                              <Calendar size={22} strokeWidth={2} />
                             </div>
-                            <div className='flex flex-row text-white w-full gap-4 cursor-pointer' onClick={() => setCurrentPage(2)}>
-                              <div className='rounded-full bg-svg-bg p-2.5 text-white'>
-                                <Crosshair size={22} strokeWidth={2} />
+                            <div className='w-full justify-between flex flex-row items-center'>
+                              <div>
+                                <p className='text-white text-sm font-semibold'>Schedule</p>
+                                <p className='text-white/75 text-[10px]'>{workout.day}</p>
                               </div>
-                              <div className='w-full justify-between flex flex-row items-center'>
-                                <div>
-                                  <p className='text-white text-sm font-semibold'>Exercises</p>
-                                  <p className='text-white/75 text-[10px]'>Add more exercises to this workout</p>
-                                </div>
-                                <ChevronRight size={20} strokeWidth={2} className='text-white/30' />
-                              </div>
+                              <ChevronRight size={20} strokeWidth={2} className='text-white/30' />
                             </div>
                           </div>
-                        </motion.div>
-                      </>
-                    )}
-                    {currentPage === 1 && (
+                          <div className='flex flex-row text-white w-full gap-4 cursor-pointer' onClick={() => setCurrentPage(2)}>
+                            <div className='rounded-full bg-svg-bg p-2.5 text-white'>
+                              <Crosshair size={22} strokeWidth={2} />
+                            </div>
+                            <div className='w-full justify-between flex flex-row items-center'>
+                              <div>
+                                <p className='text-white text-sm font-semibold'>Exercises</p>
+                                <p className='text-white/75 text-[10px]'>Add more exercises to this workout</p>
+                              </div>
+                              <ChevronRight size={20} strokeWidth={2} className='text-white/30' />
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                  {currentPage === 1 && (
+                    <motion.div
+                      key='page1'
+                      initial='enter'
+                      animate='center'
+                      exit='exit'
+                      variants={pageVariants}
+                      transition={pageTransition}
+                    >
                       <div className='flex flex-col gap-4'>
                         <p className='text-white border-b-2 pb-1 border-b-white/75 w-20'>Weekdays</p>
                         <p className='text-white/75'>On which <span className='text-white font-semibold'>days of the week</span> should this workout be performed?</p>
@@ -233,18 +304,26 @@ export function DrawerEditWorkout ({ workout }) {
                         </div>
                         <p className='text-white/65 text-sm'>Pick weekdays to repeat this on</p>
                       </div>
-                    )}
+                    </motion.div>
+                  )}
 
-                    {currentPage === 2 && (
+                  {currentPage === 2 && (
+                    <motion.div
+                      key='page2'
+                      initial='enter'
+                      animate='center'
+                      exit='exit'
+                      variants={pageVariants}
+                      transition={pageTransition}
+                    >
                       <div className='flex flex-col gap-4 h-[calc(100vh-250px)]' id='exercises'>
                         {renderExercises()}
                       </div>
-                    )}
-                  </motion.div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
             </div>
-
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>

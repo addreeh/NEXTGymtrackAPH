@@ -41,6 +41,7 @@ export async function getUserRoutinesWithExercises (email) {
   const { data, error } = await supabase
     .from('routines')
     .select(`
+      id,
       name,
       day,
       routine_exercises (
@@ -525,4 +526,46 @@ export async function insertRoutineExercise (routineExercises) {
     throw new Error(error.message)
   }
   return data
+}
+// edit routine
+
+export async function updateRoutineName (routineId, newName) {
+  try {
+    const { data, error } = await supabase
+      .from('routines')
+      .update({ name: newName })
+      .eq('id', routineId)
+
+    if (error) {
+      throw error
+    }
+
+    console.log('Routine name updated successfully:', data)
+    return data
+  } catch (error) {
+    console.error('Error updating routine name:', error.message)
+    throw error
+  }
+}
+
+export async function deleteRoutine (id) {
+  const { error } = await supabase
+    .from('routine_exercises')
+    .delete()
+    .eq('routine_id', id)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  const { error2 } = await supabase
+    .from('routines')
+    .delete()
+    .eq('id', id)
+
+  if (error2) {
+    throw new Error(error2.message)
+  }
+
+  return { success: true }
 }

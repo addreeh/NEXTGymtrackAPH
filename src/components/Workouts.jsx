@@ -72,13 +72,13 @@ export default async function Workouts () {
       Array.from({ length: 5 }).map((_, index) => <SkeletonWorkouts key={index} />)
     }
     >
-      <main className='flex-grow grid w-full grid-cols-2 items-center justify-between gap-5'>
+      <main className='flex-grow grid w-full grid-cols-2 items-center justify-center gap-5 overflow-y-auto' id='hide-scroll'>
         {workoutsWithProgress.map((workout, index) => (
           <DrawerWorkout key={index} workout={workout} />
         ))}
         <NewWorkout exercises={exercises} />
       </main>
-      <footer className='text-center py-4'>
+      <footer className='text-center bg-transparent'>
         {workoutsWithProgress.some(workout => workout.day === nombreDia)
           ? (workoutsWithProgress
               .filter(workout => workout.day === nombreDia)

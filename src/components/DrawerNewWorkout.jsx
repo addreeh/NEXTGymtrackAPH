@@ -169,7 +169,6 @@ export function DrawerNewWorkout ({ exercises }) {
         })
     }
 
-    console.log('Workout Summary:', summary)
     const result = await createRoutine(summary)
     console.warn(result)
   }
@@ -409,6 +408,7 @@ export function DrawerNewWorkout ({ exercises }) {
                   <motion.div
                     animate={{ rotate: currentPage === 0 ? -90 : 0 }}
                     transition={{ duration: 0.3 }}
+                    className='cursor-pointer'
                     onClick={() => {
                       if (currentPage > 0) setCurrentPage(currentPage - 1)
                       else setOpen(false)

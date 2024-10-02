@@ -123,14 +123,14 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
 
         const mostRecentThreeWeeksAgoPerformance = threeWeeksAgoPerformances[0]
 
-        const hasMultipleWeeks = threeWeeksAgoPerformances.some(perf =>
-          new Date(perf.date).getTime() !== new Date(mostRecentThreeWeeksAgoPerformance.date).getTime()
-        )
+        // const hasMultipleWeeks = threeWeeksAgoPerformances.some(perf =>
+        //   new Date(perf.date).getTime() !== new Date(mostRecentThreeWeeksAgoPerformance.date).getTime()
+        // )
 
-        if (!hasMultipleWeeks) {
-          setRecommendation('No hay suficientes datos para hacer una recomendación. Sigue entrenando consistentemente.')
-          return
-        }
+        // if (!hasMultipleWeeks) {
+        //   setRecommendation('No hay suficientes datos para hacer una recomendación. Sigue entrenando consistentemente.')
+        //   return
+        // }
 
         const weightIncreased = lastWeekPerformance.weight > mostRecentThreeWeeksAgoPerformance.weight
         // const weightDecreased = lastWeekPerformance.weight < mostRecentThreeWeeksAgoPerformance.weight
@@ -168,7 +168,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
     useEffect(() => {
       if (recommendation && !isLoading && !recommendationShown) {
         toast.success(recommendation, {
-          duration: 5000,
+          // duration: 3000,
           style: {
             minWidth: '50px',
             minHeight: '45px',
@@ -700,7 +700,7 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
 
     return (
       <>
-        <Toaster />
+        <Toaster containerStyle={{ bottom: -50 }} position='fixed' />
         {(series.includes('SUPER SERIE') || series.includes('SUPERSERIE')) && Array.from({ length: numberSeries }, (_, index) => (
           <form key={index} action={createProgress} id={`progressFormSuperSerie${index}`} className='flex flex-row items-center max-w-screen gap-4'>
             <label className='relative flex items-center justify-center'>
