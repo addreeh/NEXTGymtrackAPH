@@ -169,8 +169,8 @@ export function DrawerNewWorkout ({ exercises }) {
         })
     }
 
-    const result = await createRoutine(summary)
-    console.warn(result)
+    await createRoutine(summary)
+    setOpen(false)
   }
 
   const renderPageContent = () => {
@@ -291,39 +291,68 @@ export function DrawerNewWorkout ({ exercises }) {
                 ? (
                     filteredExercises.map((exercise) => (
                       <div key={exercise.id} className='flex items-center space-x-2 gap-3'>
-                        <label className='relative flex items-center justify-center'>
-                          <motion.input
+                        <div className='relative w-14 h-14'>
+                          <input
                             type='checkbox'
-                            className='rounded-2xl border-2 border-svg-border bg-svg-bg relative h-14 w-14 cursor-pointer appearance-none transition-all duration-500 checked:border-svg-border checked:bg-white'
-                            onChange={() => handleExercisesChange(exercise.id)}
+                            id={`circularCheckbox-${exercise.id}`}
+                            className='sr-only'
                             checked={selectedExercises[exercise.id] || false}
-                            variants={boxVariants}
-                            whileHover='hover'
-                            whileTap='pressed'
+                            onChange={() => handleExercisesChange(exercise.id)}
                           />
-                          <div className='pointer-events-none absolute inset-0 flex items-center justify-center text-svg-text'>
-                            <motion.svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              strokeWidth='3.5'
-                              stroke='currentColor'
-                              className='h-9 w-9 absolute'
-                              initial={false}
-                              animate={selectedExercises[exercise.id] ? 'visible' : 'hidden'}
-                              variants={iconVariants}
+                          <label
+                            htmlFor={`circularCheckbox-${exercise.id}`}
+                            className='block w-full h-full cursor-pointer'
+                          >
+                            <svg
+                              viewBox='0 0 100 100'
+                              className='w-full h-full'
                             >
-                              <motion.path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M4.5 12.75l6 6 9-13.5'
-                                variants={tickVariants}
-                                initial='unchecked'
-                                animate={selectedExercises[exercise.id] ? 'checked' : 'unchecked'}
+                              <circle
+                                cx='50'
+                                cy='50'
+                                r='45'
+                                fill='#2F2E32'
+                                stroke='#2F2E35'
+                                strokeWidth='5'
                               />
-                            </motion.svg>
-                          </div>
-                        </label>
+                              <motion.circle
+                                cx='50'
+                                cy='50'
+                                r='45'
+                                fill='transparent'
+                                stroke='white'
+                                strokeWidth='5'
+                                strokeDasharray='282.7433388230814'
+                                initial={{ strokeDashoffset: 282.7433388230814 }}
+                                animate={{
+                                  strokeDashoffset: selectedExercises[exercise.id] ? 0 : 282.7433388230814
+                                }}
+                                transition={{
+                                  duration: 0.5,
+                                  ease: 'easeInOut'
+                                }}
+                              />
+                            </svg>
+                            {selectedExercises[exercise.id] && (
+                              <motion.svg
+                                className='absolute inset-0 w-full h-full p-3 text-white p-1'
+                                viewBox='0 0 24 24'
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                              >
+                                <path
+                                  fill='none'
+                                  stroke='currentColor'
+                                  strokeWidth='3'
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  d='M5 13l4 4L19 7'
+                                />
+                              </motion.svg>
+                            )}
+                          </label>
+                        </div>
                         <div className='flex flex-col'>
                           <p className='text-white text-lg font-semibold'>{capitalizeWords(exercise.name)}</p>
                           <p className='text-white/75 text-xs'>{(exercise.muscleGroups)}</p>
@@ -392,7 +421,18 @@ export function DrawerNewWorkout ({ exercises }) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Drawer.Root open={open} shouldScaleBackground onClose={() => setCurrentPage(0)}>
+      <Drawer.Root
+        open={open}
+        shouldScaleBackground
+        onClose={() => {
+          setCurrentPage(0)
+          setWorkoutName('')
+          setSelectedMuscleGroups({})
+          setSelectedDays({})
+          setFilteredExercises([])
+          setSelectedExercises([])
+        }}
+      >
         <Drawer.Trigger asChild>
           <div onClick={() => setOpen(true)} className='border-card-border flex h-[9.5rem] w-[9.5rem] justify-center items-center rounded-3xl border-2 bg-[#17171B] p-4 cursor-pointer ml-1 text-card-border'>
             <Plus className='w-20 h-20' />

@@ -540,7 +540,6 @@ export async function updateRoutineName (routineId, newName) {
       throw error
     }
 
-    console.log('Routine name updated successfully:', data)
     return data
   } catch (error) {
     console.error('Error updating routine name:', error.message)

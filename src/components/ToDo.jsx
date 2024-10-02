@@ -240,7 +240,6 @@ export function ToDo ({ exercise, exerciseId, series, progress, workoutDay }) {
         setIsLoading(true)
         try {
           const data = await getProgress(exerciseId, workoutDay)
-          console.log('Fetched data:', data)
 
           if (data.length > 0) {
             if (series.includes('TP') || series.includes('TS') || series.includes('BOS')) {

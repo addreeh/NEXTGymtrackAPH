@@ -185,30 +185,13 @@ export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, ch
                     transition={{ duration: 0.3 }}
                     className='cursor-pointer'
                     onClick={() => {
-                      console.warn(currentPage)
                       if (currentPage === 0) setEditOpen(false)
                       else if (currentPage === 1) {
                         setCurrentPage(0)
-                        console.log(selectedDays)
                       } else if (currentPage === 2) {
                         handleExercisesChangeExit()
                         setCurrentPage(0)
                       }
-                      // if (currentPage === 1) {
-                      //   console.log(selectedDays)
-                      //   console.log('DKFJ')
-                      // }
-                      // if (currentPage === 2) {
-                      //   console.log('PEPE')
-                      //   handleExercisesChangeExit()
-                      // }
-                      // if (currentPage > 0) {
-                      //   console.log('fdsjlkfj')
-                      //   setCurrentPage(0)
-                      // } else {
-                      //   console.log('FUERa')
-                      //   setEditOpen(false)
-                      // }
                     }}
                   >
                     <ArrowLeft />

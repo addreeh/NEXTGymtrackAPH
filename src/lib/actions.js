@@ -181,7 +181,6 @@ export async function insertExercisesRoutine (routineId, selectedExercises) {
 }
 
 export async function removeWorkout (workoutId) {
-  console.log('workoutId', workoutId)
   try {
     await deleteRoutine(workoutId)
     revalidatePath('/')

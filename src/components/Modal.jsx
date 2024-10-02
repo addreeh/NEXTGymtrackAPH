@@ -2,14 +2,16 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from './ui/dialog'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { AlertDialogHeader } from './ui/alert-dialog'
-import { Trash } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
 import { removeWorkout } from '@/lib/actions'
+import { Loader2, Trash2, Trash } from 'lucide-react'
 
 export function Modal ({ workout, setOpen, setEditOpen }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleRemove = async () => {
+    setIsLoading(true)
     const result = await removeWorkout(workout)
     if (result.success) {
       toast.success('Workout deleted', {
@@ -34,6 +36,7 @@ export function Modal ({ workout, setOpen, setEditOpen }) {
         }
       })
     }
+    setIsLoading(false)
     setIsOpen(false)
     setOpen(false)
     setEditOpen(false)
@@ -69,22 +72,19 @@ export function Modal ({ workout, setOpen, setEditOpen }) {
                     className='inline-flex items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 cursor-pointer'
                     onClick={() => handleRemove()}
                   >
-                    <svg
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      className='h-5 w-5 mr-2'
-                      xmlns='http://www.w3.org/2000/svg'
-                    >
-                      <path
-                        d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
-                        strokeWidth='2'
-                        strokeLinejoin='round'
-                        strokeLinecap='round'
-                      />
-                    </svg>
-
-                    Delete
+                    {isLoading
+                      ? (
+                        <>
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                          Eliminando...
+                        </>
+                        )
+                      : (
+                        <>
+                          <Trash2 className='mr-2 h-4 w-4' />
+                          Eliminar
+                        </>
+                        )}
                   </button>
                 </div>
               </motion.div>
