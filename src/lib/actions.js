@@ -42,7 +42,6 @@ export async function createProgress (formData) {
 
   try {
     const insertedId = await insertProgress(email, newProgress)
-    revalidatePath('/workouts')
     return insertedId
   } catch (error) {
     console.error('Error insertando el progreso', error)
@@ -145,6 +144,7 @@ export async function createRoutine (formData) {
 
     await insertRoutineExercise(routineExercises)
 
+    revalidatePath('/')
     return true
   } catch (error) {
     console.error('Error insertando la rutina', error)
@@ -156,6 +156,7 @@ export async function editRoutine (routineId, newName) {
   try {
     await updateRoutineName(routineId, newName)
 
+    revalidatePath('/')
     return true
   } catch (error) {
     console.error('Error insertando la rutina', error)
@@ -183,6 +184,7 @@ export async function removeWorkout (workoutId) {
   console.log('workoutId', workoutId)
   try {
     await deleteRoutine(workoutId)
+    revalidatePath('/')
     return true
   } catch (error) {
     console.error('Error eliminando el progreso', error)

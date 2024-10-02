@@ -3,7 +3,7 @@ import { getExercises, getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutin
 import { Suspense } from 'react'
 import { DrawerWorkout } from '@/components/DrawerWorkout'
 import SkeletonWorkouts from '@/components/skeletons/SkeletonWorkouts'
-import NewWorkout from '@/components/NewWorkout'
+import { DrawerNewWorkout } from './DrawerNewWorkout'
 
 export default async function Workouts () {
   const session = await auth()
@@ -72,11 +72,11 @@ export default async function Workouts () {
       Array.from({ length: 5 }).map((_, index) => <SkeletonWorkouts key={index} />)
     }
     >
-      <main className='flex-grow grid w-full grid-cols-2 items-center justify-center gap-5 overflow-y-auto' id='hide-scroll'>
+      <main className='flex-grow grid w-full grid-cols-2 items-center justify-center gap-x-8 gap-y-6 overflow-y-auto px-2' id='hide-scroll'>
         {workoutsWithProgress.map((workout, index) => (
           <DrawerWorkout key={index} workout={workout} />
         ))}
-        <NewWorkout exercises={exercises} />
+        <DrawerNewWorkout exercises={exercises} />
       </main>
       <footer className='text-center bg-transparent'>
         {workoutsWithProgress.some(workout => workout.day === nombreDia)

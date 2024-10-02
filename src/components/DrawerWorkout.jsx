@@ -49,7 +49,7 @@ export function DrawerWorkout ({ workout }) {
           <Drawer.Trigger asChild>
             <div
               onClick={() => setOpen(true)}
-              className='border-card-border flex h-[9.5rem] w-[9.5rem] flex-col justify-between rounded-3xl border-2 bg-card-bg p-4 cursor-pointer'
+              className='border-card-border flex h-[9.5rem] w-full flex-col justify-between rounded-3xl border-2 bg-card-bg p-4 cursor-pointer'
             >
               <div className='text-card-border flex w-full justify-between'>
                 <div className='border-card-border-2 flex h-16 w-16 items-center justify-center rounded-full border-2'>
