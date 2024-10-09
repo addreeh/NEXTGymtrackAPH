@@ -1,7 +1,7 @@
 'use server'
 
 import { auth } from '@/auth'
-import { deleteProgress, deleteRoutine, getExercises, getProgressByDate, getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutinesWithExercises, insertProgress, insertRoutine, insertRoutineExercise, updateRoutineName } from './supabase'
+import { createExerciseToRoutine, deleteExerciseFromRoutine, deleteProgress, deleteRoutine, getExercises, getProgressByDate, getUserProgressLastWeekAndThreeWeeksBefore, getUserRoutinesWithExercises, insertProgress, insertRoutine, insertRoutineExercise, nullExerciseFromRoutine, updateRoutineName } from './supabase'
 import { getFullDay } from './date'
 import { revalidatePath } from 'next/cache'
 
@@ -172,7 +172,7 @@ export async function insertExercisesRoutine (routineId, selectedExercises) {
     }))
 
     await insertRoutineExercise(routineExercises)
-
+    revalidatePath('/')
     return true
   } catch (error) {
     console.error('Error insertando la rutina', error)
@@ -188,5 +188,53 @@ export async function removeWorkout (workoutId) {
   } catch (error) {
     console.error('Error eliminando el progreso', error)
     return false
+  }
+}
+
+export async function addExerciseToRoutine (exercise) {
+  try {
+    await createExerciseToRoutine(exercise)
+    revalidatePath('/')
+    return true
+  } catch (error) {
+    console.error('Error in addExerciseToRoutine:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' }
+  }
+}
+
+export async function removeExerciseFromRoutine (exerciseId) {
+  try {
+    await deleteExerciseFromRoutine(exerciseId)
+    revalidatePath('/')
+    return true
+  } catch (error) {
+    console.error('Error in removeExerciseFromRoutine:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'An unknown error occurred' }
+  }
+}
+
+export async function handleSeriesChangeRoutine (exerciseId, seriesValue, seriesType) {
+  try {
+    let updatedSeries
+
+    if (seriesValue === 0) {
+      updatedSeries = null
+    } else {
+      updatedSeries = `${seriesValue} x ${seriesType.toUpperCase()}`
+    }
+
+    console.log('handleSeriesChangeRoutine', exerciseId, updatedSeries)
+
+    // Corregido el orden de los parámetros aquí
+    await nullExerciseFromRoutine(exerciseId, updatedSeries)
+
+    revalidatePath('/')
+    return true
+  } catch (error) {
+    console.error('Error in handleSeriesChange:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'An unknown error occurred'
+    }
   }
 }

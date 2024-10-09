@@ -5,7 +5,7 @@ import { DrawerWorkout } from '@/components/DrawerWorkout'
 import SkeletonWorkouts from '@/components/skeletons/SkeletonWorkouts'
 import { DrawerNewWorkout } from './DrawerNewWorkout'
 
-export default async function Workouts () {
+export default async function Workouts ({ gallery }) {
   const session = await auth()
 
   const diasSemana = [
@@ -74,11 +74,11 @@ export default async function Workouts () {
     >
       <main className='flex-grow grid w-full grid-cols-2 items-center justify-center gap-x-8 gap-y-6 overflow-y-auto px-2' id='hide-scroll'>
         {workoutsWithProgress.map((workout, index) => (
-          <DrawerWorkout key={index} workout={workout} />
+          <DrawerWorkout key={index} workout={workout} gallery={gallery} />
         ))}
-        <DrawerNewWorkout exercises={exercises} />
+        <DrawerNewWorkout exercises={exercises} gallery={gallery} />
       </main>
-      <footer className='text-center bg-transparent'>
+      <footer className='text-center bg-bg-app absolute bottom-0 left-0 right-0 py-4'>
         {workoutsWithProgress.some(workout => workout.day === nombreDia)
           ? (workoutsWithProgress
               .filter(workout => workout.day === nombreDia)

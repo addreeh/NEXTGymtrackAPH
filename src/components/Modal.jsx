@@ -2,49 +2,30 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from './ui/dialog'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { AlertDialogHeader } from './ui/alert-dialog'
-import toast, { Toaster } from 'react-hot-toast'
-import { removeWorkout } from '@/lib/actions'
+import { removeExerciseFromRoutine, removeWorkout } from '@/lib/actions'
 import { Loader2, Trash2, Trash } from 'lucide-react'
 
-export function Modal ({ workout, setOpen, setEditOpen }) {
+export function Modal ({ workout, setOpen, setEditOpen, drawerPage, setDrawerPage, exerciseId }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleRemove = async () => {
     setIsLoading(true)
-    const result = await removeWorkout(workout)
-    if (result.success) {
-      toast.success('Workout deleted', {
-        // duration: 3000,
-        style: {
-          minWidth: '50px',
-          minHeight: '45px',
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff'
-        }
-      })
+    if (drawerPage !== 1) {
+      await removeWorkout(workout)
     } else {
-      toast.error('Error deleting workout', {
-        // duration: 3000,
-        style: {
-          minWidth: '50px',
-          minHeight: '45px',
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff'
-        }
-      })
+      await removeExerciseFromRoutine(exerciseId)
     }
+    await new Promise(resolve => setTimeout(resolve, 2000))
     setIsLoading(false)
+    setDrawerPage(0)
     setIsOpen(false)
-    setOpen(false)
+    // setOpen(false)
     setEditOpen(false)
   }
 
   return (
     <>
-      <Toaster />
       <Dialog>
         <DialogTrigger asChild>
           <div className='rounded-full bg-red-500 p-2.5 text-white cursor-pointer' onClick={() => setIsOpen(true)}>
@@ -69,20 +50,20 @@ export function Modal ({ workout, setOpen, setEditOpen }) {
                 </div>
                 <div className='mt-6 flex justify-end'>
                   <button
-                    className='inline-flex items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md hover:-translate-y-1 hover:scale-110 cursor-pointer'
+                    className='inline-flex items-center px-4 py-2 bg-red-600 transition ease-in-out delay-75 hover:bg-red-700 text-white text-sm font-medium rounded-md cursor-pointer min-w-32 justify-between'
                     onClick={() => handleRemove()}
                   >
                     {isLoading
                       ? (
                         <>
                           <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                          Eliminando...
+                          Removing ...
                         </>
                         )
                       : (
                         <>
                           <Trash2 className='mr-2 h-4 w-4' />
-                          Eliminar
+                          Remove
                         </>
                         )}
                   </button>

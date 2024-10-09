@@ -45,6 +45,7 @@ export async function getUserRoutinesWithExercises (email) {
       name,
       day,
       routine_exercises (
+        id,
         series,
         rest,
         exercise_definitions (
@@ -564,6 +565,69 @@ export async function deleteRoutine (id) {
 
   if (error2) {
     throw new Error(error2.message)
+  }
+
+  return { success: true }
+}
+
+// Modified createExerciseToRoutine function
+export async function createExerciseToRoutine (exercise) {
+  // First, get the current series
+  const { data: currentExercise, error: fetchError } = await supabase
+    .from('routine_exercises')
+    .select('series')
+    .eq('id', exercise.id)
+    .single()
+
+  if (fetchError) {
+    throw new Error(fetchError.message)
+  }
+
+  // Combine current series with new series
+  let updatedSeries = exercise.series
+  console.warn('DENTOR', exercise, updatedSeries, currentExercise)
+  if (currentExercise.series) {
+    updatedSeries = `${currentExercise.series} + ${exercise.series}`
+  }
+
+  // Update with combined series
+  const { error } = await supabase
+    .from('routine_exercises')
+    .update({
+      series: updatedSeries
+    })
+    .eq('id', exercise.id)
+    .select()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return { success: true }
+}
+
+export async function deleteExerciseFromRoutine (id) {
+  const { error } = await supabase
+    .from('routine_exercises')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return { success: true }
+}
+
+export async function nullExerciseFromRoutine (exerciseId, updatedSeries) {
+  const { error } = await supabase
+    .from('routine_exercises')
+    .update({ series: updatedSeries })
+    .eq('id', exerciseId)
+    .select()
+
+  if (error) {
+    throw new Error(error.message)
   }
 
   return { success: true }

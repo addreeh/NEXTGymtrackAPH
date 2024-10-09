@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Suspense, useRef, useState } from 'react'
+import { Suspense, useRef, useState, memo, useCallback, useMemo } from 'react'
 import { Drawer } from 'vaul'
 
 import { capitalizeWords } from '@/lib/mix'
@@ -20,6 +20,16 @@ import { Legs } from '@/svg/Legs'
 import { Shoulder } from '@/svg/Shoulder'
 import { ArrowLeft, ArrowRight, Info, SlidersHorizontal } from 'lucide-react'
 import { DrawerEditWorkout } from './DrawerEditWorkout'
+import Image from 'next/image'
+
+// Memoizing ArrowLeft to prevent unnecessary re-renders
+const MemoizedArrowLeft = memo(ArrowLeft)
+
+// Memoizing InfoPopover to prevent unnecessary re-renders
+const MemoizedInfoPopover = memo(InfoPopover)
+
+// Memoizing DrawerEditWorkout to prevent unnecessary re-renders
+const MemoizedDrawerEditWorkout = memo(DrawerEditWorkout)
 
 function findMaxWeightProgress (exercise) {
   if (!exercise.progress.lastWeek || exercise.progress.lastWeek.length === 0) {
@@ -34,7 +44,7 @@ function findMaxWeightProgress (exercise) {
   return maxWeightProgress
 }
 
-export function DrawerWorkout ({ workout }) {
+export function DrawerWorkout ({ workout, gallery }) {
   const [currentPage, setCurrentPage] = useState(0)
   const [selectedExercise, setSelectedExercise] = useState()
   const [open, setOpen] = useState(false)
@@ -42,10 +52,56 @@ export function DrawerWorkout ({ workout }) {
   const [editOpen, setEditOpen] = useState(false)
   const infoButtonRef = useRef(null)
 
+  const getExerciseImagePath = (exerciseName) => {
+    const formattedName = exerciseName
+      .toLowerCase()
+      .replace(/ /g, '_')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+
+    const matchingImage = gallery.find(img => img.includes(formattedName))
+    return matchingImage
+  }
+
+  // Memoize the onClose handler
+  const handleClose = useCallback(() => {
+    setCurrentPage(0)
+  }, [])
+
+  // Memoize the onClick handler
+  const handleArrowClick = useCallback(() => {
+    if (currentPage === 1) {
+      setCurrentPage(0)
+    } else if (currentPage === 0) {
+      setOpen(false)
+    }
+  }, [currentPage])
+
+  // Memoize the animate prop
+  const arrowAnimation = useMemo(() => ({
+    rotate: currentPage === 0 ? -90 : 0
+  }), [currentPage])
+
+  // Memoize setOpen and setEditOpen to prevent unnecessary re-renders
+  const memoizedSetOpen = useCallback((value) => setOpen(value), [])
+  const memoizedSetEditOpen = useCallback((value) => setEditOpen(value), [])
+
+  // Memoize the workout object to prevent unnecessary re-renders
+  const memoizedWorkout = useMemo(() => workout, [workout])
+
+  // Memoize the selectedExercise to prevent unnecessary re-renders
+  const memoizedSelectedExercise = useMemo(() => selectedExercise, [selectedExercise])
+
+  // Memoize setSelectedExercise to prevent unnecessary re-renders
+  const memoizedSetSelectedExercise = useCallback((value) => setSelectedExercise(value), [])
+
+  // Memoize setCurrentPage to prevent unnecessary re-renders
+  const memoizedSetCurrentPage = useCallback((value) => setCurrentPage(value), [])
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className='flex'>
-        <Drawer.Root open={open} shouldScaleBackground onClose={() => setCurrentPage(0)}>
+        <Drawer.Root open={open} shouldScaleBackground onClose={handleClose}>
           <Drawer.Trigger asChild>
             <div
               onClick={() => setOpen(true)}
@@ -77,18 +133,15 @@ export function DrawerWorkout ({ workout }) {
                   <div className='w-full flex-shrink-0 flex flex-row justify-between items-center text-white mb-4 font-bold'>
 
                     <motion.div
-                      animate={{ rotate: currentPage === 0 ? -90 : 0 }}
+                      animate={arrowAnimation}
                       transition={{ duration: 0.3 }}
                       className='cursor-pointer'
-                      onClick={() => {
-                        currentPage === 1 && setCurrentPage(0)
-                        currentPage === 0 && setOpen(false)
-                      }}
+                      onClick={handleArrowClick}
                     >
-                      <ArrowLeft size={30} strokeWidth={2.5} />
+                      <MemoizedArrowLeft size={30} strokeWidth={2.5} />
                     </motion.div>
                     <div className='flex flex-row gap-4'>
-                      {selectedExercise && selectedExercise.exercise_definitions.progress.lastWeek.length > 0 &&
+                      {memoizedSelectedExercise && memoizedSelectedExercise.exercise_definitions.progress.lastWeek.length > 0 &&
                         <motion.button
                           ref={infoButtonRef}
                           initial={{ scale: 0 }}
@@ -105,14 +158,19 @@ export function DrawerWorkout ({ workout }) {
                           <Info className='w-5 h-5' />
                         </motion.button>}
                       {open && (
-                        <InfoPopover
+                        <MemoizedInfoPopover
                           isOpen={infoOpen}
                           onClose={() => setInfoOpen(false)}
-                          selectedExercise={selectedExercise}
+                          selectedExercise={memoizedSelectedExercise}
                           triggerRef={infoButtonRef}
                         />
                       )}
-                      <DrawerEditWorkout workout={workout} setOpen={setOpen} editOpen={editOpen} setEditOpen={setEditOpen}>
+                      <MemoizedDrawerEditWorkout
+                        workout={memoizedWorkout}
+                        setOpen={memoizedSetOpen}
+                        editOpen={editOpen}
+                        setEditOpen={memoizedSetEditOpen}
+                      >
                         <motion.button
                           initial={{ scale: 0 }}
                           animate={currentPage === 1 || currentPage === 0 ? { scale: 1 } : { scale: 0 }}
@@ -127,7 +185,7 @@ export function DrawerWorkout ({ workout }) {
                         >
                           <SlidersHorizontal className='w-5 h-5' />
                         </motion.button>
-                      </DrawerEditWorkout>
+                      </MemoizedDrawerEditWorkout>
                     </div>
 
                   </div>
@@ -142,72 +200,109 @@ export function DrawerWorkout ({ workout }) {
                     >
                       {currentPage === 0
                         ? (
-                          <>
-                            <Drawer.Title className='font-bold text-4xl text-white mb-2 flex-shrink-0'>
-                              {workout.name}
-                            </Drawer.Title>
-                            <Drawer.Description className='text-white mb-4 flex-shrink-0'>
-                              {workout.day}
-                            </Drawer.Description>
+                          <div className='flex flex-col gap-7'>
+                            <div className='flex flex-col gap-2'>
+                              <Drawer.Title className='font-bold text-4xl text-white flex-shrink-0'>
+                                {workout.name}
+                              </Drawer.Title>
+                              <Drawer.Description className='text-white/75 text-sm flex-shrink-0'>
+                                {workout.day}
+                              </Drawer.Description>
+                            </div>
                             <div className='flex-1 overflow-hidden min-h-0'> {/* Add min-h-0 */}
                               <div className='h-full overflow-y-auto flex flex-col gap-4' id='exercises'>
-                                {workout && workout.routine_exercises.map((exercise, index) => (
-                                  <div
-                                    key={`${exercise.exercise_definitions.id}-${index}`}
-                                    className='flex flex-row justify-between items-center'
-                                    onClick={() => {
-                                      setCurrentPage(1)
-                                      setSelectedExercise(exercise)
-                                    }}
-                                  >
-                                    <div className='flex flex-row items-center gap-4'>
-                                      <div className='bg-transparent border-2 border-svg-bg w-14 h-14 rounded-full text-white flex flex-row items-center justify-center'>
-                                        <div className='bg-svg-bg w-12 h-12 text-white rounded-full flex justify-center items-center'>
-                                          {exercise.exercise_definitions.muscle_group === 'Hombros' && <Shoulder />}
-                                          {exercise.exercise_definitions.muscle_group === 'Abdominales' && <Abs />}
-                                          {exercise.exercise_definitions.muscle_group === 'Piernas' && <Legs />}
-                                          {exercise.exercise_definitions.muscle_group === 'Pecho' && <Chest />}
-                                          {exercise.exercise_definitions.muscle_group === 'Espalda' && <Back />}
-                                          {(exercise.exercise_definitions.muscle_group === 'Biceps' || exercise.exercise_definitions.muscle_group === 'Triceps') && <Arms />}
+                                {workout && workout.routine_exercises.map((exercise, index) => {
+                                  const imagePath = getExerciseImagePath(exercise.exercise_definitions.name)
+                                  return (
+                                    <div
+                                      key={`${exercise.exercise_definitions.id}-${index}`}
+                                      className='flex flex-row justify-between items-center'
+                                      onClick={() => {
+                                        memoizedSetCurrentPage(1)
+                                        memoizedSetSelectedExercise(exercise)
+                                      }}
+                                    >
+                                      <div className='flex flex-row items-center gap-4'>
+                                        <div className='relative w-14 h-14'>
+                                          <div className='absolute inset-0 rounded-full border-2 border-svg-bg overflow-hidden p-1'>
+                                            {imagePath
+                                              ? (
+                                                <Image
+                                                  src={imagePath}
+                                                  alt={exercise.exercise_definitions.name}
+                                                  width={56}
+                                                  height={56}
+                                                  className='object-cover w-full h-full'
+                                                />
+                                                )
+                                              : (
+                                                <div className='bg-svg-bg w-full h-full text-white rounded-full flex justify-center items-center'>
+                                                  {exercise.exercise_definitions.muscle_group === 'Hombros' && <Shoulder />}
+                                                  {exercise.exercise_definitions.muscle_group === 'Abdominales' && <Abs />}
+                                                  {exercise.exercise_definitions.muscle_group === 'Piernas' && <Legs />}
+                                                  {exercise.exercise_definitions.muscle_group === 'Pecho' && <Chest />}
+                                                  {exercise.exercise_definitions.muscle_group === 'Espalda' && <Back />}
+                                                  {(exercise.exercise_definitions.muscle_group === 'Biceps' ||
+                                                    exercise.exercise_definitions.muscle_group === 'Triceps') && <Arms />}
+                                                </div>
+                                                )}
+                                          </div>
+                                        </div>
+                                        <div className='flex flex-col justify-center'>
+                                          <p className='text-white font-semibold'>
+                                            {capitalizeWords(exercise.exercise_definitions.name)}
+                                          </p>
+                                          <p className='text-white text-sm'>
+                                            {!exercise.series
+                                              ? ''
+                                              : (!exercise.series.includes('SST') &&
+                                                 !exercise.series.includes('TP') &&
+                                                 exercise.series.includes('TS') &&
+                                                 !exercise.series.includes('BOS')) &&
+                                                 exercise.series.includes('TOP SET') &&
+                                                 exercise.series.includes('BACK OFF SET')
+                                                  ? capitalizeWords(exercise.series)
+                                                  : exercise.series}
+                                          </p>
                                         </div>
                                       </div>
-                                      <div className='flex flex-col justify-center'>
-                                        <p className='text-white font-semibold'>{capitalizeWords(exercise.exercise_definitions.name)}</p>
-                                        <p className='text-white text-sm'>
-                                          {!exercise.series ? '' : (!exercise.series.includes('SST') && !exercise.series.includes('TP') && exercise.series.includes('TS') && !exercise.series.includes('BOS')) ? capitalizeWords(exercise.series) : exercise.series}
-                                        </p>
+                                      <div className='text-arrow-right flex flex-row items-center gap-5'>
+                                        {exercise.exercise_definitions.progress &&
+                                         findMaxWeightProgress(exercise.exercise_definitions)
+                                          ? (
+                                            <div className='relative w-12 h-12 bg-svg-bg rounded-full flex justify-center items-center text-white'>
+                                              <p className='text-2xl font-semibold'>
+                                                {findMaxWeightProgress(exercise.exercise_definitions)}
+                                              </p>
+                                              <div className='absolute w-full h-0.5 bg-svg-bg top-1/2 transform -translate-y-1/2' />
+                                            </div>
+                                            )
+                                          : (
+                                            <ArrowRight />
+                                            )}
                                       </div>
                                     </div>
-                                    <div className='text-arrow-right flex flex-row items-center gap-5'>
-                                      {exercise.exercise_definitions.progress && findMaxWeightProgress(exercise.exercise_definitions)
-                                        ? (
-                                          <div className='relative w-12 h-12 bg-svg-bg rounded-full flex justify-center items-center text-white'>
-                                            <p className='text-2xl font-semibold'>{findMaxWeightProgress(exercise.exercise_definitions)}</p>
-                                            <div className='absolute w-full h-0.5 bg-svg-bg top-1/2 transform -translate-y-1/2' />
-                                          </div>
-                                          )
-                                        : (
-                                          <ArrowRight />
-                                          )}
-                                    </div>
-                                  </div>
-                                ))}
+                                  )
+                                })}
+
                               </div>
                             </div>
-                          </>
+                          </div>
                           )
                         : (
-                          <>
-                            <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden'>
-                              {capitalizeWords(selectedExercise.exercise_definitions.name)}
-                            </Drawer.Title>
-                            <Drawer.Description className='text-white'>
-                              Tick the checkboxes as you complete the sets
-                            </Drawer.Description>
-                            <ToDo exercise={selectedExercise} exerciseId={selectedExercise.exercise_definitions.id} series={selectedExercise.series} progress={selectedExercise.exercise_definitions.progress} workoutDay={workout.day} />
+                          <div className='flex flex-col gap-7'>
+                            <div className='flex flex-col gap-2'>
+                              <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden'>
+                                {capitalizeWords(memoizedSelectedExercise.exercise_definitions.name)}
+                              </Drawer.Title>
+                              <Drawer.Description className='text-white'>
+                                Tick the checkboxes as you complete the sets
+                              </Drawer.Description>
+                            </div>
+                            <ToDo exercise={memoizedSelectedExercise} exerciseId={memoizedSelectedExercise.exercise_definitions.id} series={memoizedSelectedExercise.series} progress={memoizedSelectedExercise.exercise_definitions.progress} workoutDay={workout.day} setEditOpen={setEditOpen} />
                             <hr className='h-px my-2 border-0 bg-gray-700' />
-                            {renderDescription({ selectedExercise })}
-                          </>
+                            {renderDescription({ selectedExercise: memoizedSelectedExercise })}
+                          </div>
                           )}
 
                     </motion.div>
@@ -219,7 +314,16 @@ export function DrawerWorkout ({ workout }) {
             </Drawer.Content>
           </Drawer.Portal>
         </Drawer.Root>
-        <DrawerEditWorkout workout={workout} setOpen={setOpen} editOpen={editOpen} setEditOpen={setEditOpen}>
+        <MemoizedDrawerEditWorkout
+          workout={memoizedWorkout}
+          setOpen={memoizedSetOpen}
+          editOpen={editOpen}
+          setEditOpen={memoizedSetEditOpen}
+          drawerPage={currentPage}
+          selectedExercise={memoizedSelectedExercise}
+          setSelectedExercise={memoizedSetSelectedExercise}
+          setDrawerPage={memoizedSetCurrentPage}
+        >
           <div
             className='ml-[-2.5rem] mt-6 text-card-border-2 cursor-pointer'
           >
@@ -234,7 +338,7 @@ export function DrawerWorkout ({ workout }) {
               </g>
             </svg>
           </div>
-        </DrawerEditWorkout>
+        </MemoizedDrawerEditWorkout>
       </div>
 
     </Suspense>

@@ -74,7 +74,7 @@ export default async function RootLayout ({ children }) {
         ))}
       </head>
       <body className={`${eina03.className} bg-bg-app min-h-[100dvh] max-h-[100dvh] flex flex-col`}>
-        <main className='flex-1 flex flex-col gap-6 p-5 overflow-y-hidden'>
+        <main className='flex-1 flex flex-col gap-6 p-5 overflow-y-hidden relative'>
           {children}
         </main>
         <BottomNavbar />

@@ -1,12 +1,12 @@
 'use client'
 
-import React, { Suspense, useState, useCallback, useEffect } from 'react'
+import React, { Suspense, useState, useCallback, useEffect, useMemo } from 'react'
 import { Drawer } from 'vaul'
+import { ProgressBar } from 'react-step-progress-bar'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, Plus, ArrowRight, Loader2 } from 'lucide-react'
 import { capitalizeWords } from '@/lib/mix'
 import { createRoutine } from '@/lib/actions'
-import ProgressBar from './ProgressBar'
 import Image from 'next/image'
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -37,6 +37,82 @@ const tickVariants = {
   checked: { pathLength: 1 },
   unchecked: { pathLength: 0 }
 }
+
+const DrawerContent = React.memo(({ currentPage, renderPageContent, handleNextPage, isCreating }) => (
+  <Drawer.Content className='bg-drawer-bg flex flex-col rounded-t-[10px] h-[96%] mt-24 fixed bottom-0 left-0 right-0'>
+    <div className='p-4 bg-drawer-bg rounded-t-[10px] flex-1'>
+      <div className='mx-auto w-20 h-1 flex-shrink-0 rounded-full bg-white mb-4' />
+      <div className='max-w-md mx-auto'>
+        <div className='w-full flex flex-row justify-between items-center text-white mb-4 font-bold min-h-10'>
+          <motion.div
+            animate={{ rotate: currentPage === 0 ? -90 : 0 }}
+            transition={{ duration: 0.3 }}
+            className='cursor-pointer'
+            onClick={() => {
+              if (currentPage > 0) setCurrentPage(currentPage - 1)
+              else setOpen(false)
+
+              if (currentPage === 1) {
+                setSelectedMuscleGroups({})
+              }
+
+              if (currentPage === 2) {
+                setSelectedDays({})
+              }
+
+              if (currentPage === 3) {
+                setSelectedExercises([])
+              }
+            }}
+          >
+            <ArrowLeft />
+          </motion.div>
+          <ProgressBar
+            filledBackground='#ffffff'
+            percent={progressPercentage()}
+            width={300}
+          />
+          {(currentPage === 1 || currentPage === 3) && (
+            <button
+              className='bg-white text-black font-bold p-2 rounded-full flex flex-row items-center justify-center gap-2'
+              onClick={handleNextPage}
+            >
+              <ArrowRight strokeWidth={2.5} />
+            </button>
+          )}
+        </div>
+        <AnimatePresence initial={false} mode='wait'>
+          <motion.div
+            key={currentPage}
+            initial={{ x: '20%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '-20%', opacity: 0, transition: { duration: 0.2 } }}
+            transition={{ delay: 0, duration: 0.2 }}
+            className='flex flex-col gap-4 px-2'
+          >
+            {renderPageContent()}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+    {(currentPage === 0 || currentPage === 2 || currentPage === 4) && (
+      <div className='px-4 py-10 bg-drawer-bg flex justify-end'>
+        <button
+          className='bg-white text-black font-bold px-4 py-2 rounded-full flex flex-row items-center justify-between  gap-2'
+          onClick={handleNextPage}
+        >
+          {isCreating
+            ? <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            : <ArrowRight strokeWidth={2.5} />} {currentPage === 4
+              ? isCreating
+                ? 'Creating'
+                : 'Finish'
+              : 'Continue'}
+        </button>
+      </div>
+    )}
+  </Drawer.Content>
+))
 
 export function DrawerNewWorkout ({ exercises, gallery }) {
   const [currentPage, setCurrentPage] = useState(0)
@@ -119,11 +195,9 @@ export function DrawerNewWorkout ({ exercises, gallery }) {
 
   const progressPercentage = () => {
     switch (currentPage) {
-      case 0: return 20
-      case 1: return 40
-      case 2: return 60
-      case 3: return 80
-      case 4: return 100
+      case 0: return 33
+      case 1: return 66
+      case 2: return 100
       default: return 0
     }
   }
@@ -201,16 +275,16 @@ export function DrawerNewWorkout ({ exercises, gallery }) {
     // setOpen(false)
   }
 
-  const renderPageContent = () => {
+  const renderPageContent = useMemo(() => {
     return (
       <div className='h-full w-full flex flex-col overflow-y-hidden'>
         <div className='flex-shrink-0'>
           {currentPage === 0 && (
             <>
-              <Drawer.Title className='font-bold text-4xl text-white pb-2'>
+              <Drawer.Title className='font-bold text-4xl text-white'>
                 Name
               </Drawer.Title>
-              <Drawer.Description className='text-white/85 text-sm'>
+              <Drawer.Description className='text-white/75 text-xs'>
                 Set a name for this workout
               </Drawer.Description>
             </>
@@ -220,7 +294,7 @@ export function DrawerNewWorkout ({ exercises, gallery }) {
               <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden pb-2'>
                 Exercises
               </Drawer.Title>
-              <Drawer.Description className='text-white text-sm'>
+              <Drawer.Description className='text-white/75 text-xs'>
                 Select exercises for your workout
               </Drawer.Description>
             </>
@@ -230,7 +304,7 @@ export function DrawerNewWorkout ({ exercises, gallery }) {
               <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden'>
                 Summary
               </Drawer.Title>
-              <Drawer.Description className='text-white text-sm'>
+              <Drawer.Description className='text-white/75 text-xs'>
                 Review your workout plan
               </Drawer.Description>
             </>
@@ -470,107 +544,39 @@ export function DrawerNewWorkout ({ exercises, gallery }) {
         </AnimatePresence>
       </div>
     )
-  }
+  }, [currentPage, workoutName, selectedMuscleGroups, selectedDays, selectedExercises, errors])
+
+  // Memoizing the onClose function to prevent unnecessary re-renders
+  const handleClose = useCallback(() => {
+    setCurrentPage(0)
+    setWorkoutName('')
+    setSelectedMuscleGroups({})
+    setSelectedDays({})
+    setFilteredExercises([])
+    setSelectedExercises([])
+    setOpen(false)
+  }, [])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Drawer.Root
         open={open}
         shouldScaleBackground
-        onClose={() => {
-          setCurrentPage(0)
-          setWorkoutName('')
-          setSelectedMuscleGroups({})
-          setSelectedDays({})
-          setFilteredExercises([])
-          setSelectedExercises([])
-        }}
+        onClose={handleClose} // Using the memoized onClose function
       >
         <Drawer.Trigger asChild>
-          <div onClick={() => setOpen(true)} className='border-card-border flex h-[9.5rem] w-full justify-center items-center rounded-3xl border-2 bg-[#17171B] p-4 cursor-pointer ml-1 text-card-border'>
+          <div onClick={() => setOpen(true)} className='border-card-border flex h-[9.5rem] w-[9.5rem] justify-center items-center rounded-3xl border-2 bg-[#17171B] p-4 cursor-pointer ml-1 text-card-border'>
             <Plus className='w-20 h-20' />
           </div>
         </Drawer.Trigger>
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 rounded-3xl bg-drawer-overlay border-2 border-drawer-border' />
-          <Drawer.Content className='bg-drawer-bg flex flex-col rounded-t-[10px] h-[96%] mt-24 fixed bottom-0 left-0 right-0'>
-            <div className='p-4 bg-drawer-bg rounded-t-[10px] flex-1'>
-              <div className='mx-auto w-20 h-1 flex-shrink-0 rounded-full bg-white mb-4' />
-              <div className='max-w-md mx-auto'>
-                <div className='w-full flex flex-row gap-4 justify-between items-center text-white mb-4 font-bold min-h-10'>
-                  <motion.div
-                    animate={{ rotate: currentPage === 0 ? -90 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className='cursor-pointer'
-                    onClick={() => {
-                      console.log('DENTRO', currentPage)
-                      if (currentPage > 0) setCurrentPage(currentPage - 1)
-                      else setOpen(false)
-
-                      if (currentPage === 0) {
-                        setWorkoutName('')
-                      }
-
-                      if (currentPage === 1) {
-                        setSelectedMuscleGroups({})
-                      }
-
-                      if (currentPage === 2) {
-                        setSelectedDays({})
-                      }
-
-                      if (currentPage === 3) {
-                        setSelectedExercises([])
-                      }
-                    }}
-                  >
-                    <ArrowLeft />
-                  </motion.div>
-                  <ProgressBar percent={progressPercentage()} />
-                  {(currentPage === 1 || currentPage === 3)
-                    ? (
-                      <button
-                        className='bg-white text-black font-bold p-2 rounded-full flex flex-row items-center justify-center gap-2'
-                        onClick={handleNextPage}
-                      >
-                        <ArrowRight strokeWidth={2.5} />
-                      </button>
-                      )
-                    : (
-                      <div className='w-10' />
-                      )}
-                </div>
-                <AnimatePresence initial={false} mode='wait'>
-                  <motion.div
-                    key={currentPage}
-                    initial={{ x: '20%', opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: '-20%', opacity: 0, transition: { duration: 0.2 } }}
-                    transition={{ delay: 0, duration: 0.2 }}
-                    className='flex flex-col gap-4 px-2'
-                  >
-                    {renderPageContent()}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-            {(currentPage === 0 || currentPage === 2 || currentPage === 4) && (
-              <div className='px-4 py-10 bg-drawer-bg flex justify-end'>
-                <button
-                  className='bg-white text-black font-bold px-4 py-2 rounded-full flex flex-row items-center justify-between  gap-2'
-                  onClick={handleNextPage}
-                >
-                  {isCreating
-                    ? <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    : <ArrowRight strokeWidth={2.5} />} {currentPage === 4
-                      ? isCreating
-                        ? 'Creating'
-                        : 'Finish'
-                      : 'Continue'}
-                </button>
-              </div>
-            )}
-          </Drawer.Content>
+          <DrawerContent
+            currentPage={currentPage}
+            renderPageContent={renderPageContent}
+            handleNextPage={handleNextPage}
+            isCreating={isCreating}
+          />
         </Drawer.Portal>
       </Drawer.Root>
     </Suspense>
