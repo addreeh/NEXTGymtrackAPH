@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useEffect, useMemo, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 
 export default function SerieSelector ({ selectedSerie, setSelectedSerie, exerciseTypes }) {
@@ -63,12 +63,12 @@ export default function SerieSelector ({ selectedSerie, setSelectedSerie, exerci
         >
           <div className='h-[60px]' />
           {exerciseTypes.map((type, index) => {
-            const animate = useMemo(() => ({
+            const animate = {
               scale: index === selectedSerie ? 1 : 0.8,
               opacity: index === selectedSerie ? 1 : 0.6
-            }), [index, selectedSerie])
+            }
 
-            const transition = useMemo(() => ({ duration: 0.2 }), [])
+            const transition = { duration: 0.2 }
 
             return (
               <motion.div

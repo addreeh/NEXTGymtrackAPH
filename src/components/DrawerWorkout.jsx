@@ -1,14 +1,9 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Suspense, useRef, useState, memo, useCallback, useMemo } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import { Drawer } from 'vaul'
-
 import { capitalizeWords } from '@/lib/mix'
-
-// import { Dots } from '../assets/svg/Dots'
-// import { Adjustments } from '../assets/svg/Adjustments'
-
 import { InfoPopover } from '@/components/InfoPopover'
 import { renderDescription } from '@/components/RenderDescription'
 import { ToDo } from '@/components/ToDo'
@@ -21,15 +16,6 @@ import { Shoulder } from '@/svg/Shoulder'
 import { ArrowLeft, ArrowRight, Info, SlidersHorizontal } from 'lucide-react'
 import { DrawerEditWorkout } from './DrawerEditWorkout'
 import Image from 'next/image'
-
-// Memoizing ArrowLeft to prevent unnecessary re-renders
-const MemoizedArrowLeft = memo(ArrowLeft)
-
-// Memoizing InfoPopover to prevent unnecessary re-renders
-const MemoizedInfoPopover = memo(InfoPopover)
-
-// Memoizing DrawerEditWorkout to prevent unnecessary re-renders
-const MemoizedDrawerEditWorkout = memo(DrawerEditWorkout)
 
 function findMaxWeightProgress (exercise) {
   if (!exercise.progress.lastWeek || exercise.progress.lastWeek.length === 0) {
@@ -63,45 +49,10 @@ export function DrawerWorkout ({ workout, gallery }) {
     return matchingImage
   }
 
-  // Memoize the onClose handler
-  const handleClose = useCallback(() => {
-    setCurrentPage(0)
-  }, [])
-
-  // Memoize the onClick handler
-  const handleArrowClick = useCallback(() => {
-    if (currentPage === 1) {
-      setCurrentPage(0)
-    } else if (currentPage === 0) {
-      setOpen(false)
-    }
-  }, [currentPage])
-
-  // Memoize the animate prop
-  const arrowAnimation = useMemo(() => ({
-    rotate: currentPage === 0 ? -90 : 0
-  }), [currentPage])
-
-  // Memoize setOpen and setEditOpen to prevent unnecessary re-renders
-  const memoizedSetOpen = useCallback((value) => setOpen(value), [])
-  const memoizedSetEditOpen = useCallback((value) => setEditOpen(value), [])
-
-  // Memoize the workout object to prevent unnecessary re-renders
-  const memoizedWorkout = useMemo(() => workout, [workout])
-
-  // Memoize the selectedExercise to prevent unnecessary re-renders
-  const memoizedSelectedExercise = useMemo(() => selectedExercise, [selectedExercise])
-
-  // Memoize setSelectedExercise to prevent unnecessary re-renders
-  const memoizedSetSelectedExercise = useCallback((value) => setSelectedExercise(value), [])
-
-  // Memoize setCurrentPage to prevent unnecessary re-renders
-  const memoizedSetCurrentPage = useCallback((value) => setCurrentPage(value), [])
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className='flex'>
-        <Drawer.Root open={open} shouldScaleBackground onClose={handleClose}>
+        <Drawer.Root open={open} shouldScaleBackground onClose={() => setCurrentPage(0)}>
           <Drawer.Trigger asChild>
             <div
               onClick={() => setOpen(true)}
@@ -129,19 +80,24 @@ export function DrawerWorkout ({ workout, gallery }) {
             <Drawer.Content className='bg-drawer-bg flex flex-col rounded-t-[10px] h-[96%] mt-24 fixed bottom-0 left-0 right-0'>
               <div className='p-4 bg-drawer-bg rounded-t-[10px] flex flex-col h-full'>
                 <div className='mx-auto w-20 h-1 flex-shrink-0 rounded-full bg-white mb-4' />
-                <div className='flex flex-col h-full max-h-[calc(100vh-8rem)]'> {/* Add max-height */}
+                <div className='flex flex-col h-full max-h-[calc(100vh-8rem)]'>
                   <div className='w-full flex-shrink-0 flex flex-row justify-between items-center text-white mb-4 font-bold'>
-
                     <motion.div
-                      animate={arrowAnimation}
+                      animate={{ rotate: currentPage === 0 ? '-90deg' : '0deg' }}
                       transition={{ duration: 0.3 }}
                       className='cursor-pointer'
-                      onClick={handleArrowClick}
+                      onClick={() => {
+                        if (currentPage === 1) {
+                          setCurrentPage(0)
+                        } else if (currentPage === 0) {
+                          setOpen(false)
+                        }
+                      }}
                     >
-                      <MemoizedArrowLeft size={30} strokeWidth={2.5} />
+                      <ArrowLeft size={30} strokeWidth={2.5} />
                     </motion.div>
                     <div className='flex flex-row gap-4'>
-                      {memoizedSelectedExercise && memoizedSelectedExercise.exercise_definitions.progress.lastWeek.length > 0 &&
+                      {selectedExercise && selectedExercise.exercise_definitions.progress.lastWeek.length > 0 &&
                         <motion.button
                           ref={infoButtonRef}
                           initial={{ scale: 0 }}
@@ -158,18 +114,18 @@ export function DrawerWorkout ({ workout, gallery }) {
                           <Info className='w-5 h-5' />
                         </motion.button>}
                       {open && (
-                        <MemoizedInfoPopover
+                        <InfoPopover
                           isOpen={infoOpen}
                           onClose={() => setInfoOpen(false)}
-                          selectedExercise={memoizedSelectedExercise}
+                          selectedExercise={selectedExercise}
                           triggerRef={infoButtonRef}
                         />
                       )}
-                      <MemoizedDrawerEditWorkout
-                        workout={memoizedWorkout}
-                        setOpen={memoizedSetOpen}
+                      <DrawerEditWorkout
+                        workout={workout}
+                        setOpen={setOpen}
                         editOpen={editOpen}
-                        setEditOpen={memoizedSetEditOpen}
+                        setEditOpen={setEditOpen}
                       >
                         <motion.button
                           initial={{ scale: 0 }}
@@ -185,9 +141,8 @@ export function DrawerWorkout ({ workout, gallery }) {
                         >
                           <SlidersHorizontal className='w-5 h-5' />
                         </motion.button>
-                      </MemoizedDrawerEditWorkout>
+                      </DrawerEditWorkout>
                     </div>
-
                   </div>
                   <AnimatePresence initial={false} mode='wait'>
                     <motion.div
@@ -209,83 +164,80 @@ export function DrawerWorkout ({ workout, gallery }) {
                                 {workout.day}
                               </Drawer.Description>
                             </div>
-                            <div className='flex-1 overflow-hidden min-h-0'> {/* Add min-h-0 */}
-                              <div className='h-full overflow-y-auto flex flex-col gap-4' id='exercises'>
-                                {workout && workout.routine_exercises.map((exercise, index) => {
-                                  const imagePath = getExerciseImagePath(exercise.exercise_definitions.name)
-                                  return (
-                                    <div
-                                      key={`${exercise.exercise_definitions.id}-${index}`}
-                                      className='flex flex-row justify-between items-center'
-                                      onClick={() => {
-                                        memoizedSetCurrentPage(1)
-                                        memoizedSetSelectedExercise(exercise)
-                                      }}
-                                    >
-                                      <div className='flex flex-row items-center gap-4'>
-                                        <div className='relative w-14 h-14'>
-                                          <div className='absolute inset-0 rounded-full border-2 border-svg-bg overflow-hidden p-1'>
-                                            {imagePath
-                                              ? (
-                                                <Image
-                                                  src={imagePath}
-                                                  alt={exercise.exercise_definitions.name}
-                                                  width={56}
-                                                  height={56}
-                                                  className='object-cover w-full h-full'
-                                                />
-                                                )
-                                              : (
-                                                <div className='bg-svg-bg w-full h-full text-white rounded-full flex justify-center items-center'>
-                                                  {exercise.exercise_definitions.muscle_group === 'Hombros' && <Shoulder />}
-                                                  {exercise.exercise_definitions.muscle_group === 'Abdominales' && <Abs />}
-                                                  {exercise.exercise_definitions.muscle_group === 'Piernas' && <Legs />}
-                                                  {exercise.exercise_definitions.muscle_group === 'Pecho' && <Chest />}
-                                                  {exercise.exercise_definitions.muscle_group === 'Espalda' && <Back />}
-                                                  {(exercise.exercise_definitions.muscle_group === 'Biceps' ||
+                            <div className='overflow-y-auto max-h-[calc(100vh-15rem)] flex flex-col gap-4' id='exercises'>
+                              {workout && workout.routine_exercises.map((exercise, index) => {
+                                const imagePath = getExerciseImagePath(exercise.exercise_definitions.name)
+                                return (
+                                  <div
+                                    key={`${exercise.exercise_definitions.id}-${index}`}
+                                    className='flex flex-row justify-between items-center'
+                                    onClick={() => {
+                                      setCurrentPage(1)
+                                      setSelectedExercise(exercise)
+                                    }}
+                                  >
+                                    <div className='flex flex-row items-center gap-4'>
+                                      <div className='relative w-14 h-14'>
+                                        <div className='absolute inset-0 rounded-full border-2 border-svg-bg overflow-hidden p-1'>
+                                          {imagePath
+                                            ? (
+                                              <Image
+                                                src={imagePath}
+                                                alt={exercise.exercise_definitions.name}
+                                                width={56}
+                                                height={56}
+                                                className='object-cover w-full h-full rounded-full'
+                                              />
+                                              )
+                                            : (
+                                              <div className='bg-svg-bg w-full h-full text-white rounded-full flex justify-center items-center'>
+                                                {exercise.exercise_definitions.muscle_group === 'Hombros' && <Shoulder />}
+                                                {exercise.exercise_definitions.muscle_group === 'Abdominales' && <Abs />}
+                                                {exercise.exercise_definitions.muscle_group === 'Piernas' && <Legs />}
+                                                {exercise.exercise_definitions.muscle_group === 'Pecho' && <Chest />}
+                                                {exercise.exercise_definitions.muscle_group === 'Espalda' && <Back />}
+                                                {(exercise.exercise_definitions.muscle_group === 'Biceps' ||
                                                     exercise.exercise_definitions.muscle_group === 'Triceps') && <Arms />}
-                                                </div>
-                                                )}
-                                          </div>
+                                              </div>
+                                              )}
                                         </div>
-                                        <div className='flex flex-col justify-center'>
-                                          <p className='text-white font-semibold'>
-                                            {capitalizeWords(exercise.exercise_definitions.name)}
-                                          </p>
-                                          <p className='text-white text-sm'>
-                                            {!exercise.series
-                                              ? ''
-                                              : (!exercise.series.includes('SST') &&
+                                      </div>
+                                      <div className='flex flex-col justify-center'>
+                                        <p className='text-white font-semibold'>
+                                          {capitalizeWords(exercise.exercise_definitions.name)}
+                                        </p>
+                                        <p className='text-white text-sm'>
+                                          {!exercise.series
+                                            ? ''
+                                            : (!exercise.series.includes('SST') &&
                                                  !exercise.series.includes('TP') &&
                                                  exercise.series.includes('TS') &&
                                                  !exercise.series.includes('BOS')) &&
                                                  exercise.series.includes('TOP SET') &&
                                                  exercise.series.includes('BACK OFF SET')
-                                                  ? capitalizeWords(exercise.series)
-                                                  : exercise.series}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className='text-arrow-right flex flex-row items-center gap-5'>
-                                        {exercise.exercise_definitions.progress &&
-                                         findMaxWeightProgress(exercise.exercise_definitions)
-                                          ? (
-                                            <div className='relative w-12 h-12 bg-svg-bg rounded-full flex justify-center items-center text-white'>
-                                              <p className='text-2xl font-semibold'>
-                                                {findMaxWeightProgress(exercise.exercise_definitions)}
-                                              </p>
-                                              <div className='absolute w-full h-0.5 bg-svg-bg top-1/2 transform -translate-y-1/2' />
-                                            </div>
-                                            )
-                                          : (
-                                            <ArrowRight />
-                                            )}
+                                                ? capitalizeWords(exercise.series)
+                                                : exercise.series}
+                                        </p>
                                       </div>
                                     </div>
-                                  )
-                                })}
-
-                              </div>
+                                    <div className='text-arrow-right flex flex-row items-center gap-5'>
+                                      {exercise.exercise_definitions.progress &&
+                                         findMaxWeightProgress(exercise.exercise_definitions)
+                                        ? (
+                                          <div className='relative w-12 h-12 bg-svg-bg rounded-full flex justify-center items-center text-white'>
+                                            <p className='text-2xl font-semibold'>
+                                              {findMaxWeightProgress(exercise.exercise_definitions)}
+                                            </p>
+                                            <div className='absolute w-full h-0.5 bg-svg-bg top-1/2 transform -translate-y-1/2' />
+                                          </div>
+                                          )
+                                        : (
+                                          <ArrowRight />
+                                          )}
+                                    </div>
+                                  </div>
+                                )
+                              })}
                             </div>
                           </div>
                           )
@@ -293,36 +245,33 @@ export function DrawerWorkout ({ workout, gallery }) {
                           <div className='flex flex-col gap-7'>
                             <div className='flex flex-col gap-2'>
                               <Drawer.Title className='font-bold text-4xl text-white truncate text-ellipsis overflow-hidden'>
-                                {capitalizeWords(memoizedSelectedExercise.exercise_definitions.name)}
+                                {capitalizeWords(selectedExercise.exercise_definitions.name)}
                               </Drawer.Title>
                               <Drawer.Description className='text-white'>
                                 Tick the checkboxes as you complete the sets
                               </Drawer.Description>
                             </div>
-                            <ToDo exercise={memoizedSelectedExercise} exerciseId={memoizedSelectedExercise.exercise_definitions.id} series={memoizedSelectedExercise.series} progress={memoizedSelectedExercise.exercise_definitions.progress} workoutDay={workout.day} setEditOpen={setEditOpen} />
+                            <ToDo exercise={selectedExercise} exerciseId={selectedExercise.exercise_definitions.id} series={selectedExercise.series} progress={selectedExercise.exercise_definitions.progress} workoutDay={workout.day} setEditOpen={setEditOpen} />
                             <hr className='h-px my-2 border-0 bg-gray-700' />
-                            {renderDescription({ selectedExercise: memoizedSelectedExercise })}
+                            {renderDescription({ selectedExercise })}
                           </div>
                           )}
-
                     </motion.div>
                   </AnimatePresence>
                 </div>
-
               </div>
-
             </Drawer.Content>
           </Drawer.Portal>
         </Drawer.Root>
-        <MemoizedDrawerEditWorkout
-          workout={memoizedWorkout}
-          setOpen={memoizedSetOpen}
+        <DrawerEditWorkout
+          workout={workout}
+          setOpen={setOpen}
           editOpen={editOpen}
-          setEditOpen={memoizedSetEditOpen}
+          setEditOpen={setEditOpen}
           drawerPage={currentPage}
-          selectedExercise={memoizedSelectedExercise}
-          setSelectedExercise={memoizedSetSelectedExercise}
-          setDrawerPage={memoizedSetCurrentPage}
+          selectedExercise={selectedExercise}
+          setSelectedExercise={setSelectedExercise}
+          setDrawerPage={setCurrentPage}
         >
           <div
             className='ml-[-2.5rem] mt-6 text-card-border-2 cursor-pointer'
@@ -338,9 +287,8 @@ export function DrawerWorkout ({ workout, gallery }) {
               </g>
             </svg>
           </div>
-        </MemoizedDrawerEditWorkout>
+        </DrawerEditWorkout>
       </div>
-
     </Suspense>
   )
 }

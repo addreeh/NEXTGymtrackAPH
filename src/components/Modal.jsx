@@ -18,10 +18,12 @@ export function Modal ({ workout, setOpen, setEditOpen, drawerPage, setDrawerPag
     }
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsLoading(false)
-    setDrawerPage(0)
-    setIsOpen(false)
-    // setOpen(false)
-    setEditOpen(false)
+    try {
+      setDrawerPage(0)
+      setIsOpen(false)
+      // setOpen(false)
+      setEditOpen(false)
+    } catch {}
   }
 
   return (

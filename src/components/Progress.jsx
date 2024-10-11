@@ -85,7 +85,7 @@ export default function Progress ({ exercises, progress, users, currentUser }) {
 
   return (
     <>
-      <header className='flex flex-row w-full items-center justify-between'>
+      <header className='flex flex-row w-full items-center justify-between px-2'>
         <section className='flex flex-col gap-2'>
           <h1 className='text-4xl font-bold text-white truncate text-ellipsis overflow-hidden max-w-72'>
             {selectedExercise ? capitalizeWords(selectedExercise.name) : 'Bench Press'}
@@ -102,7 +102,7 @@ export default function Progress ({ exercises, progress, users, currentUser }) {
           handleInputChange={handleInputChange}
         />
       </header>
-      <main className='w-full flex flex-col gap-8'>
+      <main className='w-full flex flex-col gap-8 px-2'>
         <div className='flex flex-row gap-5'>
           <DropdownReps selectedReps={selectedReps} setSelectedReps={setSelectedReps} />
           <DropdownTime selectedTime={selectedTime} setSelectedTime={setSelectedTime} />

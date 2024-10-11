@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowLeft, Calendar, ChevronRight, Crosshair, Loader2, ArrowRight } from 'lucide-react'
-import React, { Suspense, useCallback, useEffect, useState, memo, useRef } from 'react'
+import React, { Suspense, useCallback, useEffect, useState, useRef } from 'react'
 import { Drawer } from 'vaul'
 import { motion, AnimatePresence } from 'framer-motion'
 import { capitalizeWords } from '@/lib/mix'
@@ -43,59 +43,6 @@ const pageTransition = {
   delay: 0, duration: 0.2
 }
 
-// Memoized component for rendering exercises
-const RenderExercises = memo(({ exercises, selectedExercises, handleExercisesChange, isLoading }) => {
-  if (isLoading) {
-    return <p className='text-white'>Loading exercises...</p>
-  }
-
-  if (exercises.length === 0) {
-    return <p className='text-white'>No exercises found in the API response.</p>
-  }
-
-  return exercises.map((exercise) => (
-    <div key={exercise.id} className='flex items-center space-x-2 gap-3'>
-      <label className='relative flex items-center justify-center'>
-        <motion.input
-          type='checkbox'
-          className='rounded-2xl border-2 border-svg-border bg-svg-bg relative h-14 w-14 cursor-pointer appearance-none transition-all duration-500 checked:border-svg-border checked:bg-white'
-          onChange={() => handleExercisesChange(exercise.id)}
-          checked={selectedExercises[exercise.id] || false}
-          variants={boxVariants}
-          whileHover='hover'
-          whileTap='pressed'
-        />
-        <div className='pointer-events-none absolute inset-0 flex items-center justify-center text-svg-text'>
-          <motion.svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth='3.5'
-            stroke='currentColor'
-            className='h-9 w-9 absolute'
-            initial={false}
-            animate={selectedExercises[exercise.id] ? 'visible' : 'hidden'}
-            variants={iconVariants}
-          >
-            <motion.path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M4.5 12.75l6 6 9-13.5'
-              variants={tickVariants}
-              initial='unchecked'
-              animate={selectedExercises[exercise.id] ? 'checked' : 'unchecked'}
-            />
-          </motion.svg>
-        </div>
-      </label>
-      <div className='flex flex-col'>
-        <p className='text-white text-lg font-semibold'>{capitalizeWords(exercise.name)}</p>
-        <p className='text-white/75 text-xs'>{exercise.muscle_group}</p>
-      </div>
-    </div>
-  ))
-})
-
 export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, drawerPage, selectedExercise, setDrawerPage, children }) {
   const [workoutName, setWorkoutName] = useState(workout.name)
   const [currentPage, setCurrentPage] = useState(0)
@@ -116,7 +63,8 @@ export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, dr
   const initialTopSet = useRef(selectedExercise?.series?.match(/TP(\d+)/)?.[1] || 0)
   const initialBackOffSet = useRef(selectedExercise?.series?.match(/BOS(\d+)/)?.[1] || 0)
 
-  // Function to check if any values have changed
+  console.log(drawerPage, currentPage)
+
   const hasValuesChanged = () => {
     return numberSeries !== initialNumberSeries.current ||
            topSet !== initialTopSet.current ||
@@ -386,12 +334,55 @@ export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, dr
                           transition={pageTransition}
                         >
                           <div className='flex flex-col gap-4 h-[calc(100vh-250px)]' id='exercises'>
-                            <RenderExercises
-                              exercises={exercises}
-                              selectedExercises={selectedExercises}
-                              handleExercisesChange={handleExercisesChange}
-                              isLoading={isLoading}
-                            />
+                            {isLoading
+                              ? (
+                                <p className='text-white'>Loading exercises...</p>
+                                )
+                              : exercises?.length === 0
+                                ? (
+                                  <p className='text-white'>No exercises found in the API response.</p>
+                                  )
+                                : exercises.map((exercise) => (
+                                  <div key={exercise.id} className='flex items-center space-x-2 gap-3'>
+                                    <label className='relative flex items-center justify-center'>
+                                      <motion.input
+                                        type='checkbox'
+                                        className='rounded-2xl border-2 border-svg-border bg-svg-bg relative h-14 w-14 cursor-pointer appearance-none transition-all duration-500 checked:border-svg-border checked:bg-white'
+                                        onChange={() => handleExercisesChange(exercise.id)}
+                                        checked={selectedExercises[exercise.id] || false}
+                                        variants={boxVariants}
+                                        whileHover='hover'
+                                        whileTap='pressed'
+                                      />
+                                      <div className='pointer-events-none absolute inset-0 flex items-center justify-center text-svg-text'>
+                                        <motion.svg
+                                          xmlns='http://www.w3.org/2000/svg'
+                                          fill='none'
+                                          viewBox='0 0 24 24'
+                                          strokeWidth='3.5'
+                                          stroke='currentColor'
+                                          className='h-9 w-9 absolute'
+                                          initial={false}
+                                          animate={selectedExercises[exercise.id] ? 'visible' : 'hidden'}
+                                          variants={iconVariants}
+                                        >
+                                          <motion.path
+                                            strokeLinecap='round'
+                                            strokeLinejoin='round'
+                                            d='M4.5 12.75l6 6 9-13.5'
+                                            variants={tickVariants}
+                                            initial='unchecked'
+                                            animate={selectedExercises[exercise.id] ? 'checked' : 'unchecked'}
+                                          />
+                                        </motion.svg>
+                                      </div>
+                                    </label>
+                                    <div className='flex flex-col'>
+                                      <p className='text-white text-lg font-semibold'>{capitalizeWords(exercise.name)}</p>
+                                      <p className='text-white/75 text-xs'>{exercise.muscle_group}</p>
+                                    </div>
+                                  </div>
+                                ))}
                           </div>
                         </motion.div>
                       )}
@@ -465,34 +456,36 @@ export function DrawerEditWorkout ({ workout, setOpen, editOpen, setEditOpen, dr
                     )}
               </div>
             </div>
-            <div className='px-4 py-10 bg-drawer-bg flex justify-end items-end'>
-              <button
-                className='bg-white text-black font-bold px-4 py-2 rounded-full flex flex-row items-center justify-between  gap-2'
-                onClick={async () => {
-                  setIsAdding(true)
-                  const serie = {
-                    id: selectedExercise.id,
-                    routine_id: workout.id,
-                    exercise_id: selectedExercise.exercise_definitions.id,
-                    series: exerciseTypes[selectedSerie] === 'Top Set' ? `${selectedReps + 1} x TS` : exerciseTypes[selectedSerie] === 'Back Off Set' ? `${selectedReps + 1} x BOS` : `${selectedReps + 1} x ${exerciseTypes[selectedSerie].toUpperCase()}`
-                  }
-                  await addExerciseToRoutine(serie)
-                  setTimeout(() => {
-                    setIsAdding(false)
-                    setDrawerPage(0)
-                    setEditOpen(false)
-                  }, 2000)
-                }}
-              >
-                {isAdding
-                  ? <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  : <ArrowRight strokeWidth={2.5} />} {currentPage === 4
-                    ? isAdding
-                      ? 'Creating'
-                      : 'Finish'
-                    : 'Continue'}
-              </button>
-            </div>
+            {drawerPage === 1 && (
+              <div className='px-4 py-10 bg-drawer-bg flex justify-end items-end'>
+                <button
+                  className='bg-white text-black font-bold px-4 py-2 rounded-full flex flex-row items-center justify-between  gap-2'
+                  onClick={async () => {
+                    setIsAdding(true)
+                    const serie = {
+                      id: selectedExercise.id,
+                      routine_id: workout.id,
+                      exercise_id: selectedExercise.exercise_definitions.id,
+                      series: exerciseTypes[selectedSerie] === 'Top Set' ? `${selectedReps + 1} x TS` : exerciseTypes[selectedSerie] === 'Back Off Set' ? `${selectedReps + 1} x BOS` : `${selectedReps + 1} x ${exerciseTypes[selectedSerie].toUpperCase()}`
+                    }
+                    await addExerciseToRoutine(serie)
+                    setTimeout(() => {
+                      setIsAdding(false)
+                      setDrawerPage(0)
+                      setEditOpen(false)
+                    }, 2000)
+                  }}
+                >
+                  {isAdding
+                    ? <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    : <ArrowRight strokeWidth={2.5} />} {currentPage === 4
+                      ? isAdding
+                        ? 'Creating'
+                        : 'Finish'
+                      : 'Continue'}
+                </button>
+              </div>
+            )}
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
