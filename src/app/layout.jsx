@@ -1,8 +1,6 @@
-import { auth } from '@/auth'
 import './globals.css'
 import BottomNavbar from '@/components/BottomNavbar'
 import localFont from 'next/font/local'
-import { redirect } from 'next/navigation'
 
 const eina03 = localFont({
   src: [
@@ -53,12 +51,6 @@ export const metadata = {
 }
 
 export default async function RootLayout ({ children }) {
-  const session = await auth()
-
-  if (!session?.user) {
-    redirect('/api/auth/signin')
-  }
-
   return (
     <html lang='es'>
       <head>

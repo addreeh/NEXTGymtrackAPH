@@ -1,0 +1,331 @@
+[
+  {
+    "id": 1,
+    "name": "ELEVACIONES LATERALES MANCUERNA",
+    "muscle_group": "Hombros",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 2,
+    "name": "RUEDA ABDOMINAL",
+    "muscle_group": "Abdominales",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 3,
+    "name": "SOLEOS",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 5,
+    "name": "BENCH PRESS",
+    "muscle_group": "Pecho",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 8,
+    "name": "SQUAT",
+    "muscle_group": "Piernas",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 9,
+    "name": "PESO MUERTO",
+    "muscle_group": "Espalda",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 10,
+    "name": "LEG EXTENSION",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 11,
+    "name": "ADUCTOR",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 12,
+    "name": "PRESS INCLINADO MP",
+    "muscle_group": "Pecho",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 14,
+    "name": "CURL FEMORAL",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 15,
+    "name": "JALON MAQUINA - REMO MAQUINA",
+    "muscle_group": "Espalda",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 16,
+    "name": "PLANCHA ABDOMINAL",
+    "muscle_group": "Abdominales",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 18,
+    "name": "CRUNCH ABDOMINAL MAQUINA",
+    "muscle_group": "Abdominales",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 21,
+    "name": "GEMELOS MAQUINA - GEMELOS PIE",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 22,
+    "name": "ELEVACION PIERNAS",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 23,
+    "name": "JALON PRONO",
+    "muscle_group": "Espalda",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 26,
+    "name": "PRESS INCLINADO MANCUERNAS",
+    "muscle_group": "Pecho",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 28,
+    "name": "REVERSE PECK DECK - PECK DECK",
+    "muscle_group": "Pecho",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 29,
+    "name": "PULLOVER UNILATERAL",
+    "muscle_group": "Espalda",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 30,
+    "name": "PRESS MILITAR",
+    "muscle_group": "Hombros",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 32,
+    "name": "PRENSA LETAL",
+    "muscle_group": "Piernas",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 33,
+    "name": "BENCH PRESS MAQUINA",
+    "muscle_group": "Pecho",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 35,
+    "name": "REMO LIBRE",
+    "muscle_group": "Espalda",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 36,
+    "name": "REMO T",
+    "muscle_group": "Espalda",
+    "exercise_type": "Básico",
+    "notes": null
+  },
+  {
+    "id": 37,
+    "name": "FONDOS - CRUCE MEDIO",
+    "muscle_group": "Pecho",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 13,
+    "name": "HIP THRUST",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 7,
+    "name": "REMO UNILATERAL",
+    "muscle_group": "Espalda",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 4,
+    "name": "PRESS MUY INCLINADO MP",
+    "muscle_group": "Pecho",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 25,
+    "name": "DOMINADAS PRONAS - FACE PULL",
+    "muscle_group": "Espalda",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 17,
+    "name": "CRUCE SUPERIOR - LATERALES",
+    "muscle_group": "Pecho",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 27,
+    "name": "BULGARIAN SQUAT",
+    "muscle_group": "Piernas",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 42,
+    "name": "REVERSE PECK DECK",
+    "muscle_group": "ESPALDA Y HOMBRO",
+    "exercise_type": "3 x LINEAL",
+    "notes": ""
+  },
+  {
+    "id": 43,
+    "name": "DOMINADAS NEUTRAS O SUPINAS",
+    "muscle_group": "ESPALDA Y HOMBRO",
+    "exercise_type": "1 x BILBO + 1 x TS + 1 x BOS",
+    "notes": ""
+  },
+  {
+    "id": 44,
+    "name": "REMO AGARRE ABIERTO",
+    "muscle_group": "ESPALDA Y HOMBRO",
+    "exercise_type": "SERIE TARGET",
+    "notes": ""
+  },
+  {
+    "id": 46,
+    "name": "JALÓN PRONO",
+    "muscle_group": "ESPALDA Y HOMBRO",
+    "exercise_type": "3 x LINEAL",
+    "notes": ""
+  },
+  {
+    "id": 48,
+    "name": "SIX WAYS",
+    "muscle_group": "ESPALDA Y HOMBRO",
+    "exercise_type": "4 x LINEAL",
+    "notes": ""
+  },
+  {
+    "id": 51,
+    "name": "GEMELOS O SOLEOS",
+    "muscle_group": "PIERNA",
+    "exercise_type": "SST",
+    "notes": ""
+  },
+  {
+    "id": 53,
+    "name": "SENTADILLA",
+    "muscle_group": "PIERNA",
+    "exercise_type": "1 x TS + 1 x BOS",
+    "notes": ""
+  },
+  {
+    "id": 54,
+    "name": "FEMORAL SENTADO",
+    "muscle_group": "PIERNA",
+    "exercise_type": "3 x REST PAUSE + DROPSET",
+    "notes": ""
+  },
+  {
+    "id": 57,
+    "name": "PRENSA INCLINADO",
+    "muscle_group": "PIERNA",
+    "exercise_type": "2 x REST PAUSE",
+    "notes": ""
+  },
+  {
+    "id": 19,
+    "name": "TRICEPS KATANA",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 24,
+    "name": "EXTENSION TRASNUCA - EXTENSION",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 20,
+    "name": "EXTENSION TRASNUCA - CURL BICEPS",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 31,
+    "name": "TRICEPS KATANA - CURL MARTILLO",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 6,
+    "name": "CURL BAYESIAN",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 38,
+    "name": "CURL MARTILLO - SIX WAYS",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  },
+  {
+    "id": 34,
+    "name": "CURL SCOTT - CURL INVERTIDO",
+    "muscle_group": "Brazos",
+    "exercise_type": "Accesorio",
+    "notes": null
+  }
+]

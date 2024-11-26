@@ -18,6 +18,7 @@ export function SignIn ({
         'use server'
         await signIn(provider)
       }}
+      className='flex items-center justify-center cursor-pointer'
     >
       <button className='text-white' {...props}>Sign In</button>
     </form>

@@ -1,0 +1,764 @@
+[
+  {
+    "id": 1,
+    "name": "Weakness Day",
+    "day": "Lunes",
+    "routine_exercises": [
+      {
+        "id": 40,
+        "rest": "90\"",
+        "order": 1,
+        "series": "SERIE TARGET",
+        "exercise_definitions": {
+          "id": 2,
+          "name": "RUEDA ABDOMINAL",
+          "muscle_group": "Abdominales",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 41,
+        "rest": "90\"",
+        "order": 2,
+        "series": "4 x LINEAL",
+        "exercise_definitions": {
+          "id": 11,
+          "name": "ADUCTOR",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 1,
+        "rest": null,
+        "order": 3,
+        "series": "SST",
+        "exercise_definitions": {
+          "id": 3,
+          "name": "SOLEOS",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 2,
+        "rest": null,
+        "order": 4,
+        "series": "1 x CALENTAMIENTO",
+        "exercise_definitions": {
+          "id": 10,
+          "name": "LEG EXTENSION",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 42,
+        "rest": "150\"",
+        "order": 5,
+        "series": "1 x TP + 1 x BOS",
+        "exercise_definitions": {
+          "id": 8,
+          "name": "SQUAT",
+          "muscle_group": "Piernas",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 4,
+        "rest": "90\"",
+        "order": 6,
+        "series": "3 x REST PAUSE",
+        "exercise_definitions": {
+          "id": 14,
+          "name": "CURL FEMORAL",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 3,
+        "rest": "90\"",
+        "order": 7,
+        "series": "2 x DROPSET",
+        "exercise_definitions": {
+          "id": 10,
+          "name": "LEG EXTENSION",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 44,
+        "rest": "60\"",
+        "order": 8,
+        "series": "3 x SUPER SERIE",
+        "exercise_definitions": {
+          "id": 38,
+          "name": "CURL MARTILLO - SIX WAYS",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 43,
+        "rest": "150\"",
+        "order": 9,
+        "series": "1 x TP + 1 x BOS",
+        "exercise_definitions": {
+          "id": 30,
+          "name": "PRESS MILITAR",
+          "muscle_group": "Hombros",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Pull Day",
+    "day": "Martes",
+    "routine_exercises": [
+      {
+        "id": 5,
+        "rest": "90\"",
+        "order": null,
+        "series": "SERIE TARGET",
+        "exercise_definitions": {
+          "id": 16,
+          "name": "PLANCHA ABDOMINAL",
+          "muscle_group": "Abdominales",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 6,
+        "rest": "45\"",
+        "order": null,
+        "series": "3 x LINEAL",
+        "exercise_definitions": {
+          "id": 29,
+          "name": "PULLOVER UNILATERAL",
+          "muscle_group": "Espalda",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 9,
+        "rest": "90\"",
+        "order": null,
+        "series": "SERIE TARGET",
+        "exercise_definitions": {
+          "id": 23,
+          "name": "JALON PRONO",
+          "muscle_group": "Espalda",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 10,
+        "rest": "45\"",
+        "order": null,
+        "series": "3 x 2 - 1 SLOW",
+        "exercise_definitions": {
+          "id": 7,
+          "name": "REMO UNILATERAL",
+          "muscle_group": "Espalda",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 11,
+        "rest": "45\"",
+        "order": null,
+        "series": "3 x JUMPSET",
+        "exercise_definitions": {
+          "id": 25,
+          "name": "DOMINADAS PRONAS - FACE PULL",
+          "muscle_group": "Espalda",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 13,
+        "rest": "60\"",
+        "order": null,
+        "series": "3 x SUPER SERIE",
+        "exercise_definitions": {
+          "id": 24,
+          "name": "EXTENSION TRASNUCA - EXTENSION",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 7,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TP + 1 x BOS",
+        "exercise_definitions": {
+          "id": 9,
+          "name": "PESO MUERTO",
+          "muscle_group": "Espalda",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 8,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TP + 1 x BOS",
+        "exercise_definitions": {
+          "id": 35,
+          "name": "REMO LIBRE",
+          "muscle_group": "Espalda",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Push Day",
+    "day": "Miércoles",
+    "routine_exercises": [
+      {
+        "id": 14,
+        "rest": "90\"",
+        "order": null,
+        "series": "TARGET",
+        "exercise_definitions": {
+          "id": 18,
+          "name": "CRUNCH ABDOMINAL MAQUINA",
+          "muscle_group": "Abdominales",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 15,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 17,
+          "name": "CRUCE SUPERIOR - LATERALES",
+          "muscle_group": "Pecho",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 18,
+        "rest": "45\"",
+        "order": null,
+        "series": "2 x JUMPSET",
+        "exercise_definitions": {
+          "id": 37,
+          "name": "FONDOS - CRUCE MEDIO",
+          "muscle_group": "Pecho",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 19,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x DROPSET",
+        "exercise_definitions": {
+          "id": 1,
+          "name": "ELEVACIONES LATERALES MANCUERNA",
+          "muscle_group": "Hombros",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 20,
+        "rest": null,
+        "order": null,
+        "series": "SST",
+        "exercise_definitions": {
+          "id": 33,
+          "name": "BENCH PRESS MAQUINA",
+          "muscle_group": "Pecho",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 21,
+        "rest": "60\"",
+        "order": null,
+        "series": "3 x LINEAL",
+        "exercise_definitions": {
+          "id": 6,
+          "name": "CURL BAYESIAN",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 22,
+        "rest": "60\"",
+        "order": null,
+        "series": "3 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 34,
+          "name": "CURL SCOTT - CURL INVERTIDO",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 16,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TS + 1 x BOS",
+        "exercise_definitions": {
+          "id": 26,
+          "name": "PRESS INCLINADO MANCUERNAS",
+          "muscle_group": "Pecho",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 17,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TS + 1 x BOS",
+        "exercise_definitions": {
+          "id": 4,
+          "name": "PRESS MUY INCLINADO MP",
+          "muscle_group": "Pecho",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Legs Day",
+    "day": "Jueves",
+    "routine_exercises": [
+      {
+        "id": 23,
+        "rest": "90\"",
+        "order": null,
+        "series": "TARGET",
+        "exercise_definitions": {
+          "id": 22,
+          "name": "ELEVACION PIERNAS",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 24,
+        "rest": "120\"",
+        "order": null,
+        "series": "4 x LINEAL",
+        "exercise_definitions": {
+          "id": 11,
+          "name": "ADUCTOR",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 25,
+        "rest": "90\"",
+        "order": null,
+        "series": "4 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 21,
+          "name": "GEMELOS MAQUINA - GEMELOS PIE",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 27,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x LINEAL",
+        "exercise_definitions": {
+          "id": 10,
+          "name": "LEG EXTENSION",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 28,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x REST PAUSE",
+        "exercise_definitions": {
+          "id": 14,
+          "name": "CURL FEMORAL",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 29,
+        "rest": null,
+        "order": null,
+        "series": "2 x REST PAUSE",
+        "exercise_definitions": {
+          "id": 32,
+          "name": "PRENSA LETAL",
+          "muscle_group": "Piernas",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 30,
+        "rest": "90\"",
+        "order": null,
+        "series": "SERIE TARGET",
+        "exercise_definitions": {
+          "id": 3,
+          "name": "SOLEOS",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 45,
+        "rest": "90\"",
+        "order": null,
+        "series": "2 x DROPSET",
+        "exercise_definitions": {
+          "id": 27,
+          "name": "BULGARIAN SQUAT",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 26,
+        "rest": "120\"",
+        "order": null,
+        "series": "1 x TS + 2 x BOS",
+        "exercise_definitions": {
+          "id": 13,
+          "name": "HIP THRUST",
+          "muscle_group": "Piernas",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Upper Body Day",
+    "day": "Viernes",
+    "routine_exercises": [
+      {
+        "id": 31,
+        "rest": "90\"",
+        "order": null,
+        "series": "TARGET",
+        "exercise_definitions": {
+          "id": 2,
+          "name": "RUEDA ABDOMINAL",
+          "muscle_group": "Abdominales",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 32,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 28,
+          "name": "REVERSE PECK DECK - PECK DECK",
+          "muscle_group": "Pecho",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 35,
+        "rest": "90\"",
+        "order": null,
+        "series": "TARGET",
+        "exercise_definitions": {
+          "id": 12,
+          "name": "PRESS INCLINADO MP",
+          "muscle_group": "Pecho",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 36,
+        "rest": "90\"",
+        "order": null,
+        "series": "2 x JUMPSET",
+        "exercise_definitions": {
+          "id": 15,
+          "name": "JALON MAQUINA - REMO MAQUINA",
+          "muscle_group": "Espalda",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 37,
+        "rest": "45\"",
+        "order": null,
+        "series": "3 x SLOW ASCENDENTE",
+        "exercise_definitions": {
+          "id": 1,
+          "name": "ELEVACIONES LATERALES MANCUERNA",
+          "muscle_group": "Hombros",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 38,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 20,
+          "name": "EXTENSION TRASNUCA - CURL BICEPS",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 39,
+        "rest": "90\"",
+        "order": null,
+        "series": "3 x SUPERSERIE",
+        "exercise_definitions": {
+          "id": 31,
+          "name": "TRICEPS KATANA - CURL MARTILLO",
+          "muscle_group": "Brazos",
+          "exercise_type": "Accesorio",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 33,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TS + 2 x BOS",
+        "exercise_definitions": {
+          "id": 5,
+          "name": "BENCH PRESS",
+          "muscle_group": "Pecho",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      },
+      {
+        "id": 34,
+        "rest": "150\"",
+        "order": null,
+        "series": "1 x TS + 1 x BOS + 1 DROPSET",
+        "exercise_definitions": {
+          "id": 36,
+          "name": "REMO T",
+          "muscle_group": "Espalda",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "prueba",
+    "day": "Monday",
+    "routine_exercises": [
+      {
+        "id": 163,
+        "rest": null,
+        "order": null,
+        "series": "2 x LINEAL + 3 x REST PAUSE + 3 x BOS",
+        "exercise_definitions": {
+          "id": 8,
+          "name": "SQUAT",
+          "muscle_group": "Piernas",
+          "exercise_type": "Básico",
+          "progress": {
+            "lastWeek": [],
+            "threeWeeksAgo": []
+          }
+        }
+      }
+    ]
+  }
+]
