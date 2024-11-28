@@ -1,4 +1,4 @@
-# 💪 GymtrackAPH: Your Personal Fitness Companion
+# 💪 GymtrackAPH
 
 GymtrackAPH is a comprehensive web application designed to help fitness enthusiasts track their gym routines, monitor exercise progress, and visualize their fitness journey. Inspired by Dropset, this app provides an intuitive and powerful way to log and analyze your workouts.
 
