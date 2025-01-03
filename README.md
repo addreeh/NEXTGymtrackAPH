@@ -107,6 +107,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [Your Email]
+Adrián Pino - [adrianpinohidalgo@gmail.com]
 
-Project Link: [https://github.com/yourusername/gymtrackaph](https://github.com/yourusername/gymtrackaph)
+Project Link: [https://github.com/addreeh/gymtrackaph](https://github.com/addreeh/gymtrackaph)
